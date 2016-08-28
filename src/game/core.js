@@ -12,7 +12,17 @@ export function createInitialState() {
   }
 }
 
-export function update(state) {
+export function updateAcceleration(state, accelerating) {
+  return {
+    ...state,
+    player: {
+      ...state.player,
+      accelerating
+    }
+  }
+}
+
+export function updateTime(state) {
   // TODO: implement
   return state;
 }

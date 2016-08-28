@@ -3,8 +3,6 @@ import { Group } from 'react-art';
 import Circle from 'react-art/shapes/circle';
 
 export default function Player ({
-  position,
-  velocity,
   accelerating,
   screenDimensions
 }) {
@@ -14,9 +12,16 @@ export default function Player ({
   };
   const playerSize = screenDimensions.height * 0.05;
 
+  const displayProps = accelerating ? {
+    fill: '#92FF6A',
+  } : {
+    stroke: '#92FF6A',
+    strokeWidth: screenDimensions.height / 100,
+  }
+
   return (
     <Group x={playerCenter.x} y={playerCenter.y}>
-      <Circle radius={playerSize} fill='#92FF6A'/>
+      <Circle radius={playerSize} {...displayProps}/>
     </Group>
   );
 }
