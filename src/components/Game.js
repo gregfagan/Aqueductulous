@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Surface } from 'react-art';
-import Rectangle from 'react-art/shapes/rectangle';
 
-import { createInitialState, updateAcceleration } from '../game/core';
+import { createInitialState, updateInput, updateTime } from '../game/core';
 
 import Player from './Player';
 import Level from './Level';
+import Background from './Background';
 
 // TODO: Make this dynamic/responsive
 const screenDimensions = {
@@ -13,12 +13,25 @@ const screenDimensions = {
   height: 405
 }
 
+const unitLength = screenDimensions.width / 6;
+
 export default class Game extends Component {
   constructor() {
     super();
     this.state = createInitialState();
-    this.beginAcceleration = this.setState.bind(this, updateAcceleration(this.state, true), null);
-    this.endAcceleration = this.setState.bind(this, updateAcceleration(this.state, false), null);
+    this.beginAcceleration = this.updateInput.bind(this, true);
+    this.endAcceleration = this.updateInput.bind(this, false);
+
+    const startTime = performance.now();
+    this.updateTime = currentTime => {
+      this.setState(updateTime(this.state, currentTime - startTime));
+      this.raf = requestAnimationFrame(this.updateTime);
+    }
+    this.raf = requestAnimationFrame(this.updateTime);
+  }
+
+  updateInput(accelerating) {
+    this.setState(updateInput(this.state, accelerating));
   }
 
   render() {
@@ -32,7 +45,7 @@ export default class Game extends Component {
         onKeyUp={this.endAcceleration}
       >
         <Surface {...screenDimensions}>
-          <Rectangle {...screenDimensions} fill={'#aaa'} />
+          <Background xOffset={-player.position * unitLength} {...screenDimensions} />
           <Level {...level}/>
           <Player {...player} screenDimensions={screenDimensions}/>
         </Surface>

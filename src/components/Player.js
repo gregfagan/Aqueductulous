@@ -16,7 +16,7 @@ export default function Player ({
     fill: '#92FF6A',
   } : {
     stroke: '#92FF6A',
-    strokeWidth: screenDimensions.height / 100,
+    strokeWidth: screenDimensions.height / 50,
   }
 
   return (

@@ -1,18 +1,22 @@
 import { createLevel } from './level.js'
 
+const VELOCITY = {
+  SLOW: 1.5,
+  FAST: 3
+};
+
 export function createInitialState() {
   return {
     elapsedTime: 0,
     player: {
       position: 0,
-      velocity: 0,
       accelerating: false,
     },
     level: createLevel(),
   }
 }
 
-export function updateAcceleration(state, accelerating) {
+export function updateInput(state, accelerating) {
   return {
     ...state,
     player: {
@@ -22,7 +26,16 @@ export function updateAcceleration(state, accelerating) {
   }
 }
 
-export function updateTime(state) {
-  // TODO: implement
-  return state;
+export function updateTime(state, elapsedTime) {
+  const dt = (elapsedTime - state.elapsedTime) / 1000;
+  const { position, accelerating } = state.player; 
+  const velocity = accelerating ? VELOCITY.FAST : VELOCITY.SLOW;
+  return {
+    ...state,
+    elapsedTime,
+    player: {
+      ...state.player,
+      position: position + velocity * dt,
+    }
+  };
 }
