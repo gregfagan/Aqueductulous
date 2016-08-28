@@ -4,7 +4,7 @@ export function createInitialState() {
   return {
     elapsedTime: 0,
     player: {
-      location: 0,
+      position: 0,
       velocity: 0,
       accelerating: false,
     },

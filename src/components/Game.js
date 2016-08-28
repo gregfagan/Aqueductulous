@@ -7,6 +7,12 @@ import { createInitialState } from '../game/core';
 import Player from './Player';
 import Level from './Level';
 
+// TODO: Make this dynamic/responsive
+const screenDimensions = {
+  width: 720,
+  height: 405
+}
+
 export default class Game extends Component {
   constructor() {
     super();
@@ -16,11 +22,10 @@ export default class Game extends Component {
   render() {
     const { player, level } = this.state;
     return (
-      <Surface width={720} height={405}>
-        <Rectangle width={720} height={405} fill={'#ccc'}>
-          <Level {...level}/>
-          <Player {...player}/>
-        </Rectangle>
+      <Surface {...screenDimensions}>
+        <Rectangle {...screenDimensions} fill={'#aaa'} />
+        <Level {...level}/>
+        <Player {...player} screenDimensions={screenDimensions}/>
       </Surface>
     );
   }
