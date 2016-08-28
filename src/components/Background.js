@@ -3,14 +3,21 @@ import { Group, Shape } from 'react-art';
 import Rectangle from 'react-art/shapes/rectangle';
 import range from 'lodash/range';
 
-const NUM_STRIPES = 6;
+const NUM_STRIPES = 16;
 
-export default function Background ({width, height, xOffset}) {
-  const stripeWidth = width/(NUM_STRIPES * 2);
-  const stripeSkew = stripeWidth / 2;
+export default function Background ({
+  unitLength,
+  xOffset,
+  baseColor='#EBA777',
+  stripeColor='#E5A374'
+}) {
+  const width = 16 * unitLength;
+  const height = 9 * unitLength;
+  const stripeWidth = 16 * unitLength /(NUM_STRIPES * 2);
+  const stripeSkew = 2 * stripeWidth;
   return (
     <Group>
-      <Rectangle width={width} height={height} fill='#aaa'/>
+      <Rectangle width={width} height={height} fill={baseColor}/>
       <Group x={xOffset % (stripeWidth * 2)}>
         { range(NUM_STRIPES + 1).map((_,i) => (
           <Shape
@@ -18,7 +25,7 @@ export default function Background ({width, height, xOffset}) {
             x={i * stripeWidth * 2}
             width={stripeWidth}
             height={height}
-            fill='#999'
+            fill={stripeColor}
             d={`
               M ${stripeSkew} 0
               L ${stripeSkew + stripeWidth} 0

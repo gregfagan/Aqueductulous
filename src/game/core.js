@@ -1,8 +1,17 @@
+//
+// # Units and world size
+//
+// The game board is defined as a 16 unit x 9 unit rectangle.
+//
+// The player (the head of the rushing stream of water) is nominally
+// centered at (4, 4.5) -- center left of the screen.
+//
+
 import { createLevel } from './level.js'
 
 const VELOCITY = {
-  SLOW: 1.5,
-  FAST: 3
+  SLOW: 4,
+  FAST: 8
 };
 
 export function createInitialState() {

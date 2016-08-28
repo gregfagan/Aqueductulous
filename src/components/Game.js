@@ -13,12 +13,14 @@ const screenDimensions = {
   height: 405
 }
 
-const unitLength = screenDimensions.width / 6;
+const unitLength = screenDimensions.width / 16;
 
 export default class Game extends Component {
   constructor() {
     super();
+
     this.state = createInitialState();
+
     this.beginAcceleration = this.updateInput.bind(this, true);
     this.endAcceleration = this.updateInput.bind(this, false);
 
@@ -30,12 +32,16 @@ export default class Game extends Component {
     this.raf = requestAnimationFrame(this.updateTime);
   }
 
+  componentWillUnmount() {
+    cancelAnimationFrame(this.raf);
+  }
+
   updateInput(accelerating) {
     this.setState(updateInput(this.state, accelerating));
   }
 
   render() {
-    const { player, level } = this.state;
+    const { player, level, elapsedTime } = this.state;
     return (
       <div
         tabIndex={0}
@@ -45,9 +51,9 @@ export default class Game extends Component {
         onKeyUp={this.endAcceleration}
       >
         <Surface {...screenDimensions}>
-          <Background xOffset={-player.position * unitLength} {...screenDimensions} />
+          <Background xOffset={-player.position * unitLength} unitLength={unitLength}/>
           <Level {...level}/>
-          <Player {...player} screenDimensions={screenDimensions}/>
+          <Player {...player} unitLength={unitLength} elapsedTime={elapsedTime}/>
         </Surface>
       </div>
     );
