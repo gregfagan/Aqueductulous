@@ -12,7 +12,7 @@ export function createLevel(seed) {
 
   const maxControlPointXDisplacement = 10;
 
-  let curve;
+  let curve = [];
 
   // Starting point of the track is at game coordinates 0,0,
   // and the control point makes a linear horizontal line.
@@ -25,8 +25,8 @@ export function createLevel(seed) {
   {
     // Generate next control point at least as far as the latest control point.
     // This ensures that the track does not curve back around to the left.
-    if (trackPositionX < curve[lastCurveIndex].trackLocation.x)
-      trackPositionX = curve[lastCurveIndex].trackLocation.x;
+    if (trackPositionX < curve[lastCurveIndex].trackPosition.x)
+      trackPositionX = curve[lastCurveIndex].trackPosition.x;
     else
       trackPositionX++;
 
@@ -41,7 +41,7 @@ export function createLevel(seed) {
     // they don't break the track generation.
     const curveChange = Math.floor(Math.random() * 2);
 
-    if (curveChange != 0)
+    if (curveChange !== 0)
     {
       const newCurveIndex = lastCurveIndex + 1;
 
