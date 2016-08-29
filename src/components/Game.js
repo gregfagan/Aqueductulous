@@ -7,6 +7,15 @@ import Player from './Player';
 import Level from './Level';
 import Background from './Background';
 
+const containerStyle = {
+  position: 'absolute',
+  top: 0, left: 0, right: 0, bottom: 0,
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: '#666361',
+};
+
 // TODO: Make this dynamic/responsive
 const screenDimensions = {
   width: 720,
@@ -44,11 +53,13 @@ export default class Game extends Component {
     const { player, level, elapsedTime } = this.state;
     return (
       <div
+        style={containerStyle}
         tabIndex={0}
         onMouseDown={this.beginAcceleration}
         onMouseUp={this.endAcceleration}
         onKeyDown={this.beginAcceleration}
         onKeyUp={this.endAcceleration}
+        ref={view => view && view.focus()}
       >
         <Surface {...screenDimensions}>
           <Background xOffset={-player.position * unitLength} unitLength={unitLength}/>
