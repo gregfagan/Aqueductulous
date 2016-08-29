@@ -90,7 +90,7 @@ function WideAquaductSegment({originPoint, bezierCurve, isHazard, windowLeft, un
       isHazard={isHazard}
       windowLeft={windowLeft}
       unitLength={unitLength}
-      strokeWidth={60}
+      strokeWidth={0.75 * unitLength}
       strokeColor={0xAAA}
     />
   );
@@ -105,7 +105,7 @@ function NarrowAquaductSegment({originPoint, bezierCurve, isHazard, windowLeft, 
       isHazard={isHazard}
       windowLeft={windowLeft}
       unitLength={unitLength}
-      strokeWidth={30}
+      strokeWidth={0.5 * unitLength}
       strokeColor={strokeColor}
     />  
   );
