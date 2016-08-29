@@ -136,8 +136,8 @@ export function pathForBezier(bezier, unitLength=1) {
 }
 
 export function trailingPathForX(curve, x, trailLength, unitLength=1) {
-  const idx = indexForX(curve, x);
-  const bezier = bezierForIndex(curve, idx);
+  let idx = indexForX(curve, x);
+  let bezier = bezierForIndex(curve, idx);
   const t = bezier.intersects({
     p1: {x, y: 0},
     p2: {x, y: 9}
@@ -146,11 +146,17 @@ export function trailingPathForX(curve, x, trailLength, unitLength=1) {
   if (t) {
     const segment = bezier.split(0, t);
     
-    const previousSegment = idx > 0 && segment.points[0].x > x - trailLength
-      ? pathForBezier(bezierForIndex(curve, idx - 1), unitLength) + ' '
-      : ''
+    let previousSegments = '';
+    let trailStart = segment.points[0].x;
+    const minimumTrailStart = x - trailLength;
+    while (idx > 0 && trailStart > minimumTrailStart) {
+      bezier = bezierForIndex(curve, idx - 1);
+      previousSegments += pathForBezier(bezier, unitLength) + ' ';
+      idx--;
+      trailStart = bezier.points[0].x;
+    }
 
-    return previousSegment + pathForBezier(segment, unitLength);
+    return previousSegments + pathForBezier(segment, unitLength);
   }
 
   return '';
