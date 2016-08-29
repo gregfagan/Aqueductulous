@@ -1,8 +1,8 @@
 export function createLevel(seed)
 {
   const MAX_X = 160;
-  const MAX_Y = 6;
-  const MIN_Y = 3;
+  const MAX_Y = 6.5;
+  const MIN_Y = 2.5;
 
   const MIN_ENDPT_TO_CP2_DELTA = 2;
   const MAX_ENDPT_TO_CP2_DELTA = 8;
@@ -12,8 +12,8 @@ export function createLevel(seed)
 
   let curve = [];
 
-  // Generate first bezier curve. It is a straight horizontal line.
-  curve.push(makeCubicBezier(0, 4.5, 5, 4.5, 5, 4.5));
+  // Generate first bezier curve. Start with something gentle.
+  curve.push(makeCubicBezier(0, 4.5, 2, 4.5, 5, Math.random() * 2 + 3.5));
 
   let lastIdx = 0;
   while (curve[lastIdx].endpoint.x <= MAX_X)
@@ -27,14 +27,14 @@ export function createLevel(seed)
     // left of endpoint to generate a pleasing curve, and to the right
     // of this curve's first control point.
     let ctrlPt2X = Math.random() * (MAX_2ND_CP_X_DELTA - MIN_2ND_CP_X_DELTA) + ctrlPt1X + MIN_2ND_CP_X_DELTA;
-    let ctrlPt2Y = Math.random() * (MAX_Y - MIN_Y);
+    let ctrlPt2Y = Math.random() * (MAX_Y - MIN_Y) + MIN_Y;
 
     // Generate next endpoint. This should be to the right of this curve's
     // second control point.
     let endPtX = Math.random() *
       (MAX_ENDPT_TO_CP2_DELTA - MIN_ENDPT_TO_CP2_DELTA) + ctrlPt2X + MIN_ENDPT_TO_CP2_DELTA;
 
-    let endPtY = Math.random() * (MAX_Y - MIN_Y);
+    let endPtY = Math.random() * (MAX_Y - MIN_Y) + MIN_Y;
 
     curve.push(makeCubicBezier(ctrlPt1X, ctrlPt1Y, ctrlPt2X, ctrlPt2Y, endPtX, endPtY));
     lastIdx++;
