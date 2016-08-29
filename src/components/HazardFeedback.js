@@ -9,7 +9,7 @@ export default function HazardFeedback ({ player, level, elapsedTime, unitLength
   if (!lastHazardEvent) return <Text />;
   const timeSinceEvent = (elapsedTime - lastHazardEvent.time) / 1000;
   if (timeSinceEvent > effectDuration) return <Text />;
-  const t = timeSinceEvent / effectDuration;
+  // const t = timeSinceEvent / effectDuration;
 
   const center = playerCenter(position, level, unitLength);
   return (
