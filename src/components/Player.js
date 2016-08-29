@@ -3,6 +3,7 @@ import { Group } from 'react-art';
 import Rectangle from 'react-art/shapes/rectangle';
 import Circle from 'react-art/shapes/circle';
 import BubbleEffect from './BubbleEffect';
+import SplashEffect from './SplashEffect';
 
 function PlayerTrail ({
   position,
@@ -26,18 +27,23 @@ function PlayerHead ({ position, size, unitLength, color, elapsedTime, accelerat
   return (
     <Group>
       <Circle
-        x={position.x}
-        y={position.y}
+        { ...position }
         radius={size/2 * unitLength}
         fill={color}
       />
       <BubbleEffect
-        x={position.x}
-        y={position.y}
+        { ...position }
         maxSpawnDistance={size}
         unitLength={unitLength}
         elapsedTime={elapsedTime}
         intensity={accelerating ? 4 : 1}
+      />
+      <SplashEffect
+        { ...position }
+        streamWidth={size}
+        elapsedTime={elapsedTime}
+        unitLength={unitLength}
+        active={accelerating}
       />
     </Group>
   );
