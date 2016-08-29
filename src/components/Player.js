@@ -1,7 +1,7 @@
 import React from 'react';
 import { Group } from 'react-art';
 import Rectangle from 'react-art/shapes/rectangle';
-import Circle from 'react-art/shapes/circle';
+import Wedge from 'react-art/shapes/wedge';
 import BubbleEffect from './BubbleEffect';
 import SplashEffect from './SplashEffect';
 
@@ -24,13 +24,28 @@ function PlayerTrail ({
 }
 
 function PlayerHead ({ position, size, unitLength, color, elapsedTime, accelerating }) {
+  const radius = size/2 * unitLength;
   return (
     <Group>
-      <Circle
-        { ...position }
-        radius={size/2 * unitLength}
+      <Wedge
+        x={position.x - radius}
+        y={position.y - radius}
+        outerRadius={radius}
+        startAngle={0}
+        endAngle={180}
         fill={color}
       />
+      { accelerating &&
+        <Wedge
+          x={position.x - radius * 1.1}
+          y={position.y - radius * 1.1}
+          innerRadius={radius}
+          outerRadius={radius * 1.1}
+          startAngle={0}
+          endAngle={180}
+          fill='#fff'
+        />
+      }
       <BubbleEffect
         { ...position }
         maxSpawnDistance={size}
