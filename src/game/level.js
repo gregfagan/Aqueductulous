@@ -1,3 +1,5 @@
+import Bezier from 'bezier-js';
+
 export function createLevel(seed)
 {
   const MAX_X = 160;
@@ -53,7 +55,7 @@ export function createLevel(seed)
   });
 
   return {
-    curve: curve,
+    curve,
     hazards: hazards
   }
 }
@@ -64,4 +66,93 @@ function makeCubicBezier(ctrlPt1X, ctrlPt1Y, ctrlPt2X, ctrlPt2Y, endPtX, endPtY)
     controlPoint2: {x: ctrlPt2X, y: ctrlPt2Y},
     endpoint: {x: endPtX, y: endPtY}
   }
+}
+
+export function indexForX(curve, x) {
+  let idx = 0;
+  
+  while(idx < curve.length - 1 && curve[idx].endpoint.x < x) {
+    idx++;
+  }
+
+  return idx;
+}
+
+function segmentForIndex(curve, idx) {
+  const startpoint = idx > 0
+    ? curve[idx - 1].endpoint
+    : {x: 0, y: 4.5};
+
+  const segment = curve[idx];
+  return {
+    startpoint,
+    ...segment
+  };
+}
+
+function bezierForIndex(curve, idx) {
+  const segment = segmentForIndex(curve, idx);
+
+  return new Bezier(
+    segment.startpoint,
+    segment.controlPoint1,
+    segment.controlPoint2,
+    segment.endpoint
+  );
+}
+
+export function yForX(curve, x) {
+  const idx = indexForX(curve, x);
+  const bezier = bezierForIndex(curve, idx);
+  const t = bezier.intersects({
+    p1: {x, y: 0},
+    p2: {x, y: 9}
+  })[0];
+  
+  return t
+    ? bezier.get(t).y
+    : 4.5;
+}
+
+export function pathForBezier(bezier, unitLength=1) {
+  const screenBezierPoints = bezier.points.map(point => ({
+      x: point.x * unitLength,
+      y: point.y * unitLength
+    }));
+  
+  return screenBezierPoints
+    ? new Bezier(screenBezierPoints).toSVG()
+    : '';
+}
+
+export function trailingPathForX(curve, x, trailLength, unitLength=1) {
+  const idx = indexForX(curve, x);
+  const bezier = bezierForIndex(curve, idx);
+  const t = bezier.intersects({
+    p1: {x, y: 0},
+    p2: {x, y: 9}
+  })[0];
+
+  if (t) {
+    const segment = bezier.split(0, t);
+    
+    const previousSegment = idx > 0 && segment.points[0].x > x - trailLength
+      ? pathForBezier(bezierForIndex(curve, idx - 1), unitLength) + ' '
+      : ''
+
+    return previousSegment + pathForBezier(segment, unitLength);
+  }
+
+  return '';
+}
+
+export function tangentForX(curve, x) {
+  const idx = indexForX(curve, x);
+  const bezier = bezierForIndex(curve, idx);
+  const t = bezier.intersects({
+    p1: {x, y: 0},
+    p2: {x, y: 9}
+  })[0];
+  
+  return t ? bezier.derivative(t) : {x:0, y:0};
 }

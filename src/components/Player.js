@@ -1,35 +1,46 @@
 import React from 'react';
-import { Group } from 'react-art';
-import Rectangle from 'react-art/shapes/rectangle';
+import { Group, Shape, Transform } from 'react-art';
 import Wedge from 'react-art/shapes/wedge';
 import BubbleEffect from './BubbleEffect';
 import SplashEffect from './SplashEffect';
 
+import { yForX, trailingPathForX, tangentForX } from '../game/level';
+
+const X_OFFSET = 4;
+
 function PlayerTrail ({
   position,
+  level,
   unitLength,
   size,
   color
 }) {
   return (
-    // TODO: this is going to need to reuse some of the bezier magic
-    // that the Level is doing.
-    <Rectangle
-      y={position.y - 1/2 * size * unitLength}
-      width={position.x}
-      height={size * unitLength}
-      fill={color}
+    <Shape
+      x={(X_OFFSET - position) * unitLength}
+      stroke={color}
+      strokeWidth={size * unitLength}
+      d={ trailingPathForX(level.curve, position, X_OFFSET, unitLength) }
     />
   )
 }
 
-function PlayerHead ({ position, size, unitLength, color, elapsedTime, accelerating }) {
+function PlayerHead ({ position, size, unitLength, color, elapsedTime, accelerating, level }) {
   const radius = size/2 * unitLength;
+
+  const center = {
+    x: X_OFFSET * unitLength,
+    y: yForX(level.curve, position) * unitLength,
+  };
+
+  const tangent = tangentForX(level.curve, position);
+  const angle = Math.atan(tangent.y / tangent.x) * 180 / Math.PI;
+
   return (
-    <Group>
+    <Group transform={new Transform().rotate(angle, center.x, center.y)}>
       <Wedge
-        x={position.x - radius}
-        y={position.y - radius}
+        x={center.x - radius}
+        y={center.y - radius}
         outerRadius={radius}
         startAngle={0}
         endAngle={180}
@@ -37,8 +48,8 @@ function PlayerHead ({ position, size, unitLength, color, elapsedTime, accelerat
       />
       { accelerating &&
         <Wedge
-          x={position.x - radius * 1.1}
-          y={position.y - radius * 1.1}
+          x={center.x - radius * 1.1}
+          y={center.y - radius * 1.1}
           innerRadius={radius}
           outerRadius={radius * 1.1}
           startAngle={0}
@@ -47,14 +58,14 @@ function PlayerHead ({ position, size, unitLength, color, elapsedTime, accelerat
         />
       }
       <BubbleEffect
-        { ...position }
+        { ...center }
         maxSpawnDistance={size}
         unitLength={unitLength}
         elapsedTime={elapsedTime}
         intensity={accelerating ? 4 : 1}
       />
       <SplashEffect
-        { ...position }
+        { ...center }
         streamWidth={size}
         elapsedTime={elapsedTime}
         unitLength={unitLength}
@@ -65,28 +76,27 @@ function PlayerHead ({ position, size, unitLength, color, elapsedTime, accelerat
 }
 
 export default function Player ({
+  position,
+  level,
   accelerating,
   unitLength,
   elapsedTime,
   size,
-  color
+  color,
 }) {
-  const playerCenter = {
-    x: 4 * unitLength,
-    y: 4.5 * unitLength,
-  };
-
   return (
     <Group>
       <PlayerTrail
-        position={playerCenter}
         unitLength={unitLength}
+        position={position}
+        level={level}
         size={size}
         color={color}
       />
       <PlayerHead
         unitLength={unitLength}
-        position={playerCenter}
+        position={position}
+        level={level}
         size={size}
         color={color}
         elapsedTime={elapsedTime}
