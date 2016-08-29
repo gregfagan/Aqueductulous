@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Surface, Text } from 'react-art';
+import { Surface } from 'react-art';
 
+import ShadowText from './ShadowText';
 import Background from './Background'
 
 const containerStyle = {
@@ -28,21 +29,16 @@ export default class TitleScreen extends Component {
   }
 
   render() {
-    const titleTextStyle = {
-      font: 'bold 72px "Arial"',
-      alignment: "middle"
+    const titleProps = {
+      font: { fontSize: 72 },
     };
 
-    const descriptionTextStyle = {
-      fill: "#FFF",
-      font: 'bold italic 24px "Arial"',
-      alignment: "middle"
-    };
-
-    const descriptionTextStyleShadow = {
-      fill: "#79C9E5",
-      font: 'bold italic 24px "Arial"',
-      alignment: "middle"
+    const descriptionProps = {
+      shadowOffsetRatio: 1/8,
+      font: {
+        fontSize: 24,
+        fontStyle: 'italic',
+      }
     };
 
     const title = "AQUADUCTULOUS!!";
@@ -60,62 +56,34 @@ export default class TitleScreen extends Component {
       >
         <Surface {...screenDimensions}>
           <Background xOffset={0} unitLength={unitLength}/>
-          <Text 
+          <ShadowText 
             x={360}
             y={105}
-            fill={"#79C9E5"}
-            {...titleTextStyle}
+            {...titleProps}
           >
             {title}
-          </Text>
-          <Text 
-            x={365}
-            y={100}
-            fill={"#FFF"}
-            {...titleTextStyle}
-          >
-            {title}
-          </Text>
-          <Text 
+          </ShadowText>
+          <ShadowText 
             x={359}
             y={201}
-            {...descriptionTextStyleShadow}>
-            {description1}
-          </Text>
-          <Text 
-            x={360}
-            y={200}
-            {...descriptionTextStyle}
+            {...descriptionProps}
           >
             {description1}
-          </Text>
-          <Text 
+          </ShadowText>
+          <ShadowText 
             x={359}
             y={231}
-            {...descriptionTextStyleShadow}>
-            {description2}
-          </Text>
-          <Text 
-            x={360}
-            y={230}
-            {...descriptionTextStyle}
+            {...descriptionProps}
           >
             {description2}
-          </Text>
-          <Text 
+          </ShadowText>
+          <ShadowText 
             x={359}
             y={291}
-            {...descriptionTextStyleShadow}
+            {...descriptionProps}
           >
             {description3}
-          </Text>
-          <Text 
-            x={360}
-            y={290}
-            {...descriptionTextStyle}
-          >
-            {description3}
-          </Text>
+          </ShadowText>
         </Surface>
       </div>
     );

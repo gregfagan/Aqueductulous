@@ -4,7 +4,7 @@ import { xOffset as playerGameXGap } from '../game/player';
 
 const LIGHT_AQUADUCT_COLOR = 0xAAA;
 const DARK_AQUADUCT_COLOR = 0x999;
-const HAZARD_ZONE_COLOR = 0xAD4C23;
+export const HAZARD_ZONE_COLOR = 0xAD4C23;
 
 export default function Level ({curve, hazards, xOffset, unitLength}) {
   const trackGameWindowLeft = xOffset - playerGameXGap; // The left most visible part of the track in game units -- uhh handle the < 0 case.

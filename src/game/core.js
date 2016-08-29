@@ -20,7 +20,7 @@ export const GAMEMODE = {
   GameOver: 3
 }
 
-const HAZARD_RESULTS = {
+export const HAZARD_RESULTS = {
   FAIL: { text: 'TOO FAST', velocity: 0.5 },
   GOOD: { text: 'GOOD', velocity: 1.2, window: 0.55 },
   GREAT: { text: 'GREAT!', velocity: 1.4, window: 0.25 },
