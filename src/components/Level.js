@@ -1,8 +1,8 @@
 import React from 'react';
 import { Group, Shape } from 'react-art';
+import { xOffset as playerGameXGap } from '../game/player';
 
 export default function Level ({curve, hazards, xOffset, unitLength}) {
-  const playerGameXGap = 4; // Distance of player from left screen edge in game units.
   const trackGameWindowLeft = xOffset - playerGameXGap; // The left most visible part of the track in game units -- uhh handle the < 0 case.
 
   // Find the element in the curve array that is closest to 

@@ -67,10 +67,7 @@ export function createLevel(seed)
     lastIdx++;
   }
 
-  return {
-    curve: curve,
-    hazards: hazards
-  }
+  return { curve, hazards };
 }
 
 function makeCubicBezier(ctrlPt1X, ctrlPt1Y, ctrlPt2X, ctrlPt2Y, endPtX, endPtY) {
@@ -91,7 +88,7 @@ export function indexForX(curve, x) {
   return idx;
 }
 
-function segmentForIndex(curve, idx) {
+export function segmentForIndex(curve, idx) {
   const startpoint = idx > 0
     ? curve[idx - 1].endpoint
     : {x: 0, y: 4.5};

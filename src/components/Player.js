@@ -4,9 +4,8 @@ import Wedge from 'react-art/shapes/wedge';
 import BubbleEffect from './BubbleEffect';
 import SplashEffect from './SplashEffect';
 
-import { yForX, trailingPathForX, tangentForX } from '../game/level';
-
-const X_OFFSET = 4;
+import { trailingPathForX, tangentForX } from '../game/level';
+import { playerCenter, xOffset } from '../game/player';
 
 function PlayerTrail ({
   position,
@@ -17,10 +16,10 @@ function PlayerTrail ({
 }) {
   return (
     <Shape
-      x={(X_OFFSET - position) * unitLength}
+      x={(xOffset - position) * unitLength}
       stroke={color}
       strokeWidth={size * unitLength}
-      d={ trailingPathForX(level.curve, position, X_OFFSET, unitLength) }
+      d={ trailingPathForX(level.curve, position, xOffset, unitLength) }
     />
   )
 }
@@ -28,24 +27,12 @@ function PlayerTrail ({
 function PlayerHead ({ position, size, unitLength, color, elapsedTime, accelerating, level }) {
   const radius = size/2 * unitLength;
 
-  const center = {
-    x: X_OFFSET * unitLength,
-    y: yForX(level.curve, position) * unitLength,
-  };
-
+  const center = playerCenter(position, level, unitLength);
   const tangent = tangentForX(level.curve, position);
   const angle = Math.atan(tangent.y / tangent.x) * 180 / Math.PI;
 
   return (
     <Group transform={new Transform().rotate(angle, center.x, center.y)}>
-      <Wedge
-        x={center.x - radius}
-        y={center.y - radius}
-        outerRadius={radius}
-        startAngle={0}
-        endAngle={180}
-        fill={color}
-      />
       { accelerating &&
         <Wedge
           x={center.x - radius * 1.1}

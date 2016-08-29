@@ -71,7 +71,12 @@ export default class Game extends Component {
             unitLength={unitLength}
             elapsedTime={elapsedTime}
           />
-          <HazardFeedback unitLength={unitLength} elapsedTime={elapsedTime}/>
+          <HazardFeedback
+            player={player}
+            level={level}
+            unitLength={unitLength}
+            elapsedTime={elapsedTime}
+          />
         </Surface>
       </div>
     );
