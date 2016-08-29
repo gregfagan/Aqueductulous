@@ -6,6 +6,7 @@ import { createInitialState, updateInput, updateTime } from '../game/core';
 import Player from './Player';
 import Level from './Level';
 import Background from './Background';
+import HazardFeedback from './HazardFeedback';
 
 const containerStyle = {
   position: 'absolute',
@@ -70,6 +71,7 @@ export default class Game extends Component {
             unitLength={unitLength}
             elapsedTime={elapsedTime}
           />
+          <HazardFeedback unitLength={unitLength} elapsedTime={elapsedTime}/>
         </Surface>
       </div>
     );
