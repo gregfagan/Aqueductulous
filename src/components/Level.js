@@ -98,7 +98,7 @@ function WideAquaductSegment({originPoint, bezierCurve, isHazard, windowLeft, un
 }
 
 function NarrowAquaductSegment({originPoint, bezierCurve, isHazard, windowLeft, unitLength}) {
-  const strokeColor = isHazard ? 0xF00 : 0x999;
+  const strokeColor = isHazard ? 0xAD4C23 : 0x999;
   return (
     <GenericAquaduct
       originPoint={originPoint}

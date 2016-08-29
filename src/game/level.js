@@ -2,26 +2,44 @@ import Bezier from 'bezier-js';
 
 export function createLevel(seed)
 {
-  const MAX_X = 160;
+  const MAX_X = 980;
   const MAX_Y = 6.5;
   const MIN_Y = 2.5;
 
-  const MIN_ENDPT_TO_CP2_DELTA = 2;
-  const MAX_ENDPT_TO_CP2_DELTA = 8;
+  const MIN_ENDPT_TO_CP2_DELTA = 1;
+  const MAX_ENDPT_TO_CP2_DELTA = 2;
 
-  const MAX_2ND_CP_X_DELTA = 5;
+  const MIN_ENDPT_TO_CP2_DELTA_HAZARD = 0.1;
+  const MAX_ENDPT_TO_CP2_DELTA_HAZARD = 0.2;
+
+  const MAX_2ND_CP_X_DELTA = 2;
   const MIN_2ND_CP_X_DELTA = 0.5;
+
+  const MAX_2ND_CP_X_DELTA_HAZARD = 0.25;
+  const MIN_2ND_CP_X_DELTA_HAZARD = 0.15;
 
   const HAZARD_PERCENTAGE = 0.49;
 
+  const randoCalrissian = Math.random;  // Replace this with seedable function later.
+
   let curve = [];
+  let hazards = [];
 
   // Generate first bezier curve. Start with something gentle.
-  curve.push(makeCubicBezier(0, 4.5, 2, 4.5, 5, Math.random() * 2 + 3.5));
+  curve.push(makeCubicBezier(0, 4.5, 2, 4.5, 5, randoCalrissian() * 2 + 3.5));
+  hazards.push(false);  // No hazard on first segment!
 
   let lastIdx = 0;
   while (curve[lastIdx].endpoint.x <= MAX_X)
   {
+    let isSegmentHazard = false;
+    if (!hazards[lastIdx] && randoCalrissian() <= HAZARD_PERCENTAGE) { // No consecutive hazard zones?
+      isSegmentHazard = true;
+      hazards.push(true);
+    }
+    else
+      hazards.push(false);
+
     // Generate the first control point, which will be a reflection of the
     // previous curve's second control point.
     let ctrlPt1X = 2 * curve[lastIdx].endpoint.x - curve[lastIdx].controlPoint2.x;
@@ -30,32 +48,27 @@ export function createLevel(seed)
     // Randomly generate the second control point. This should be to the
     // left of endpoint to generate a pleasing curve, and to the right
     // of this curve's first control point.
-    let ctrlPt2X = Math.random() * (MAX_2ND_CP_X_DELTA - MIN_2ND_CP_X_DELTA) + ctrlPt1X + MIN_2ND_CP_X_DELTA;
-    let ctrlPt2Y = Math.random() * (MAX_Y - MIN_Y) + MIN_Y;
+    const max2ndCpDelta = isSegmentHazard ? MAX_2ND_CP_X_DELTA_HAZARD : MAX_2ND_CP_X_DELTA;
+    const min2ndCpDelta = isSegmentHazard ? MIN_2ND_CP_X_DELTA_HAZARD : MIN_2ND_CP_X_DELTA;
+    let ctrlPt2X = randoCalrissian() * (max2ndCpDelta - min2ndCpDelta) + ctrlPt1X + min2ndCpDelta;
+    let ctrlPt2Y = randoCalrissian() * (MAX_Y - MIN_Y) + MIN_Y;
 
     // Generate next endpoint. This should be to the right of this curve's
     // second control point.
-    let endPtX = Math.random() *
-      (MAX_ENDPT_TO_CP2_DELTA - MIN_ENDPT_TO_CP2_DELTA) + ctrlPt2X + MIN_ENDPT_TO_CP2_DELTA;
+    const maxEndPtToCP2Delta = isSegmentHazard ? MAX_ENDPT_TO_CP2_DELTA_HAZARD : MAX_ENDPT_TO_CP2_DELTA;
+    const minEndPtToCP2Delta = isSegmentHazard ? MIN_ENDPT_TO_CP2_DELTA_HAZARD : MIN_ENDPT_TO_CP2_DELTA;
+    let endPtX = randoCalrissian() *
+      (maxEndPtToCP2Delta - minEndPtToCP2Delta) + ctrlPt2X + minEndPtToCP2Delta;
 
-    let endPtY = Math.random() * (MAX_Y - MIN_Y) + MIN_Y;
+    let endPtY = randoCalrissian() * (MAX_Y - MIN_Y) + MIN_Y;
 
     curve.push(makeCubicBezier(ctrlPt1X, ctrlPt1Y, ctrlPt2X, ctrlPt2Y, endPtX, endPtY));
+
     lastIdx++;
   }
 
-  // Generate hazards
-  let hazards = [];
-
-  curve.forEach( (value, index, array) => {
-    if (Math.random() <= HAZARD_PERCENTAGE)
-      hazards[index] = true;
-    else
-      hazards[index] = false;
-  });
-
   return {
-    curve,
+    curve: curve,
     hazards: hazards
   }
 }
