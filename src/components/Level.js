@@ -10,20 +10,16 @@ export default function Level ({curve, hazards, xOffset, unitLength}) {
   // trackGameWindowLeft without going past it.
   // Doing a stupid linear search for now
   // Also there's probably a smarter more concise ES2015 way to do this FML
-  let curveLeftIndex = 0;
-  for (let i = 1; i < curve.length; i++) {
-    if (curve[i].endpoint.x > trackGameWindowLeft) {
-      curveLeftIndex = i - 1;
+  let curveLeftIndex;
+  for (curveLeftIndex = 0; curveLeftIndex < curve.length - 1; curveLeftIndex++) {
+    if (curve[curveLeftIndex + 1].endpoint.x > trackGameWindowLeft)
       break;
-    }
   }
 
   let curveRightIndex = 0;
-  for (let i = 1; i < curve.length; i++) {
-    if (curve[i].endpoint.x >= trackGameWindowLeft + 16) {
-      curveRightIndex = i;
+  for (curveRightIndex = curveLeftIndex; curveRightIndex < curve.length; curveRightIndex++) {
+    if (curve[curveRightIndex].endpoint.x >= trackGameWindowLeft + 16)
       break;
-    }
   }
 
   // Move cursor to curveLeftIndex's left origin point, which is
@@ -34,23 +30,50 @@ export default function Level ({curve, hazards, xOffset, unitLength}) {
     y: curveLeftIndex === 0 ? 4.5 : curve[curveLeftIndex - 1].endpoint.y
   }
 
+  // Cuz typing this repeatedly sucks.
+  function screenifyX(x) { return (x - trackGameWindowLeft) * unitLength; }
+  function screenifyY(y) { return y * unitLength; }
+
+  let visibleCurve = curve.slice(curveLeftIndex, curveRightIndex + 1)
+  let visibleHazards = hazards.slice(curveLeftIndex, curveRightIndex + 1);
+
+  // Draw each curve segment separately...
+  // Draw origin, draw first curve
+  // Each subsequent curve uses the previous curve endpoint as the origin
+
+  let hazardColor = 0xF00;
+  let regularColor = 0xFFF;
+
   return (
     <Group>
       <Shape
         d={`
-          M ${ (drawingOriginPoint.x - trackGameWindowLeft) * unitLength }
-            ${ drawingOriginPoint.y * unitLength }
-          ${ curve.map( (value, index, array) => {
-            if (index >= curveLeftIndex && index <= curveRightIndex )
-            return (`
-              C ${ (value.controlPoint1.x - trackGameWindowLeft) * unitLength } ${ value.controlPoint1.y * unitLength }
-                ${ (value.controlPoint2.x - trackGameWindowLeft) * unitLength } ${ value.controlPoint2.y * unitLength }
-                ${ (value.endpoint.x - trackGameWindowLeft) * unitLength } ${ value.endpoint.y * unitLength }
-            `);
-          })}
+          M ${ screenifyX(drawingOriginPoint.x) } ${ screenifyY(drawingOriginPoint.y) }
+          C ${ screenifyX(visibleCurve[0].controlPoint1.x) } ${ screenifyY(visibleCurve[0].controlPoint1.y) }
+            ${ screenifyX(visibleCurve[0].controlPoint2.x) } ${ screenifyY(visibleCurve[0].controlPoint2.y) }
+            ${ screenifyX(visibleCurve[0].endpoint.x) } ${ screenifyY(visibleCurve[0].endpoint.y) }
         `}
-        stroke={0xFFF}
+        stroke={ visibleHazards[0] ? hazardColor : regularColor }
+        strokeWidth={10}
       />
+      { visibleCurve.map((value, index, array) => {
+          if (index !== 0) {
+          return (
+            <Shape
+              d={`
+                M ${ screenifyX(array[index - 1].endpoint.x) }
+                  ${ screenifyY(array[index - 1].endpoint.y) }
+                C ${ screenifyX(value.controlPoint1.x) } ${ screenifyY(value.controlPoint1.y) }
+                  ${ screenifyX(value.controlPoint2.x) } ${ screenifyY(value.controlPoint2.y) }
+                  ${ screenifyX(value.endpoint.x) } ${ screenifyY(value.endpoint.y) }
+                `}
+              stroke={ visibleHazards[index] ? hazardColor : regularColor }
+              strokeWidth={10}
+            />
+            );
+          }
+        })
+      }
     </Group>
   );
 }

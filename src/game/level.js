@@ -10,6 +10,8 @@ export function createLevel(seed)
   const MAX_2ND_CP_X_DELTA = 5;
   const MIN_2ND_CP_X_DELTA = 0.5;
 
+  const HAZARD_PERCENTAGE = 0.49;
+
   let curve = [];
 
   // Generate first bezier curve. Start with something gentle.
@@ -40,14 +42,23 @@ export function createLevel(seed)
     lastIdx++;
   }
 
+  // Generate hazards
+  let hazards = [];
+
+  curve.forEach( (value, index, array) => {
+    if (Math.random() <= HAZARD_PERCENTAGE)
+      hazards[index] = true;
+    else
+      hazards[index] = false;
+  });
+
   return {
     curve: curve,
-    hazards: [[1,2]]
+    hazards: hazards
   }
 }
 
-function makeCubicBezier(ctrlPt1X, ctrlPt1Y, ctrlPt2X, ctrlPt2Y, endPtX, endPtY)
-{
+function makeCubicBezier(ctrlPt1X, ctrlPt1Y, ctrlPt2X, ctrlPt2Y, endPtX, endPtY) {
   return {
     controlPoint1: {x: ctrlPt1X, y: ctrlPt1Y},
     controlPoint2: {x: ctrlPt2X, y: ctrlPt2Y},
