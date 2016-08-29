@@ -9,14 +9,14 @@ export function createLevel(seed)
   const MIN_ENDPT_TO_CP2_DELTA = 1;
   const MAX_ENDPT_TO_CP2_DELTA = 2;
 
-  const MIN_ENDPT_TO_CP2_DELTA_HAZARD = 0.1;
-  const MAX_ENDPT_TO_CP2_DELTA_HAZARD = 0.2;
+  const MIN_ENDPT_TO_CP2_DELTA_HAZARD = 0.25;
+  const MAX_ENDPT_TO_CP2_DELTA_HAZARD = 2;
 
   const MAX_2ND_CP_X_DELTA = 2;
   const MIN_2ND_CP_X_DELTA = 0.5;
 
-  const MAX_2ND_CP_X_DELTA_HAZARD = 0.25;
-  const MIN_2ND_CP_X_DELTA_HAZARD = 0.15;
+  const MAX_2ND_CP_X_DELTA_HAZARD = 0.5;
+  const MIN_2ND_CP_X_DELTA_HAZARD = 0.1;
 
   const HAZARD_PERCENTAGE = 0.49;
 
