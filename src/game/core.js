@@ -10,7 +10,7 @@
 import { createLevel, indexForX, segmentForIndex } from './level.js'
 
 const VELOCITY = {
-  SLOW: 2,
+  SLOW: 2.5,
   FAST: 4
 };
 
@@ -21,14 +21,14 @@ export const GAMEMODE = {
 }
 
 const HAZARD_RESULTS = {
-  FAIL: { text: 'OOPS', velocity: 0.5 },
-  GOOD: { text: 'GOOD', velocity: 1.2, window: 3 },
-  GREAT: { text: 'GREAT', velocity: 1.4, window: 2 },
-  AMAZING: { text: 'AMAZING', velocity: 1.6, window: 1 },
+  FAIL: { text: 'TOO FAST', velocity: 0.5 },
+  GOOD: { text: 'GOOD', velocity: 1.2, window: 0.55 },
+  GREAT: { text: 'GREAT!', velocity: 1.4, window: 0.25 },
+  AMAZING: { text: 'AMAZING!!', velocity: 1.6, window: 0.1 },
 };
 
 const HAZARD_EVENT_TIME = 1;
-const HAZARD_DETECTION_OFFSET = 0.25;
+const HAZARD_DETECTION_OFFSET = 0;
 
 export function createInitialState() {
   return {
@@ -97,11 +97,11 @@ function updateHazardEvent(state) {
     } else {
       const previousIndex = indexForX(level.curve, positionVisualAdjust) - 1;
       if (previousIndex >= 0 && hazards[previousIndex]) {
-        const segment = segmentForIndex(curve, previousIndex - 1);
+        const segment = segmentForIndex(curve, previousIndex);
         const hazardDistance = positionVisualAdjust - segment.endpoint.x;
-        if (hazardDistance < HAZARD_RESULTS.GOOD.window) hazardResult = HAZARD_RESULTS.GOOD;
-        if (hazardDistance < HAZARD_RESULTS.GREAT.window) hazardResult = HAZARD_RESULTS.GREAT;
-        if (hazardDistance < HAZARD_RESULTS.AMAZING.window) hazardResult = HAZARD_RESULTS.AMAZING;
+        if (hazardDistance <= HAZARD_RESULTS.GOOD.window) hazardResult = HAZARD_RESULTS.GOOD;
+        if (hazardDistance <= HAZARD_RESULTS.GREAT.window) hazardResult = HAZARD_RESULTS.GREAT;
+        if (hazardDistance <= HAZARD_RESULTS.AMAZING.window) hazardResult = HAZARD_RESULTS.AMAZING;
       }
     }
   }
