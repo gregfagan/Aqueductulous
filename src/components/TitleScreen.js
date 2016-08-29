@@ -3,6 +3,8 @@ import { Surface, Text } from 'react-art';
 
 import { updateGameMode, GAMEMODE } from '../game/core.js'
 
+import Background from './Background'
+
 const containerStyle = {
   position: 'absolute',
   top: 0, left: 0, right: 0, bottom: 0,
@@ -18,6 +20,8 @@ const screenDimensions = {
   height: 405
 }
 
+const unitLength = screenDimensions.width / 16;
+
 export default class TitleScreen extends Component {
   constructor({startGameCallback}) {
     super();
@@ -26,6 +30,28 @@ export default class TitleScreen extends Component {
   }
 
   render() {
+    const titleTextStyle = {
+      font: 'bold 72px "Arial"',
+      alignment: "middle"
+    };
+
+    const descriptionTextStyle = {
+      fill: "#FFF",
+      font: 'bold italic 24px "Arial"',
+      alignment: "middle"
+    };
+
+    const descriptionTextStyleShadow = {
+      fill: "#79C9E5",
+      font: 'bold italic 24px "Arial"',
+      alignment: "middle"
+    };
+
+    const title = "AQUADUCTULOUS!!";
+    const description1 = "Friends! Romans! Countrymen!";
+    const description2 = "They're all relying on YOU to quench their thirst!";
+    const description3 = "Press or click to get flowing!";
+
     return (
       <div
         style={containerStyle}
@@ -35,13 +61,62 @@ export default class TitleScreen extends Component {
         ref={view => view && view.focus()}
       >
         <Surface {...screenDimensions}>
+          <Background xOffset={0} unitLength={unitLength}/>
           <Text 
             x={360}
-            fill={0xA6BD8A}
-            font={'bold 72px "Arial"'}
-            alignment={'middle'}
+            y={105}
+            fill={"#79C9E5"}
+            {...titleTextStyle}
           >
-            AQUADUCTULOUS
+            {title}
+          </Text>
+          <Text 
+            x={365}
+            y={100}
+            fill={"#FFF"}
+            {...titleTextStyle}
+          >
+            {title}
+          </Text>
+          <Text 
+            x={359}
+            y={201}
+            {...descriptionTextStyleShadow}>
+            {description1}
+          </Text>
+          <Text 
+            x={360}
+            y={200}
+            {...descriptionTextStyle}
+          >
+            {description1}
+          </Text>
+          <Text 
+            x={359}
+            y={231}
+            {...descriptionTextStyleShadow}>
+            {description2}
+          </Text>
+          <Text 
+            x={360}
+            y={230}
+            {...descriptionTextStyle}
+          >
+            {description2}
+          </Text>
+          <Text 
+            x={359}
+            y={291}
+            {...descriptionTextStyleShadow}
+          >
+            {description3}
+          </Text>
+          <Text 
+            x={360}
+            y={290}
+            {...descriptionTextStyle}
+          >
+            {description3}
           </Text>
         </Surface>
       </div>

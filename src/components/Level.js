@@ -126,6 +126,8 @@ function GenericAquaduct({originPoint, bezierCurve, isHazard, windowLeft, unitLe
       `}
       stroke={ strokeColor }
       strokeWidth={ strokeWidth }
+      strokeCap={ "butt" }
+      strokeJoin={ "butt" }
     />
   );
 }
