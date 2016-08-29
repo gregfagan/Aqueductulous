@@ -63,7 +63,7 @@ export default class Game extends Component {
       >
         <Surface {...screenDimensions}>
           <Background xOffset={-player.position * unitLength} unitLength={unitLength}/>
-          <Level {...level}/>
+          <Level {...level} xOffset={player.position} unitLength={unitLength}/>
           <Player {...player} unitLength={unitLength} elapsedTime={elapsedTime}/>
         </Surface>
       </div>

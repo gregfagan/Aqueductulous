@@ -1,80 +1,56 @@
-export function createLevel(seed) {
-  // TODO: Find a seedable random number generator
-  
-  const maxX = 160; // Make this tunable, this is our arbitrary track length
-  
-  // Min/Max Y-values, making these multiples of 9 because of our 16:9 aspect ratio.
-  // Maybe make these tunable to the actual aspect ratio.
-  // NOTE: Choosing to follow computer graphics convention to have Y increase in the
-  // downward direction rather than the upward direction as in cartesian coordinates.
-  const maxY = 36;
-  const minY = -36;
+export function createLevel(seed)
+{
+  const MAX_X = 160;
+  const MAX_Y = 6;
+  const MIN_Y = 3;
 
-  const maxControlPointXDisplacement = 10;
+  const MIN_ENDPT_TO_CP2_DELTA = 2;
+  const MAX_ENDPT_TO_CP2_DELTA = 8;
+
+  const MAX_2ND_CP_X_DELTA = 5;
+  const MIN_2ND_CP_X_DELTA = 0.5;
 
   let curve = [];
 
-  // Starting point of the track is at game coordinates 0,0,
-  // and the control point makes a linear horizontal line.
-  curve[0] = makeCurvePoint(0, 0, 0, 0);
+  // Generate first bezier curve. It is a straight horizontal line.
+  curve.push(makeCubicBezier(0, 4.5, 5, 4.5, 5, 4.5));
 
-  let trackPositionX = 0;
-  let lastCurveIndex = 0;
-  
-  while (trackPositionX < maxX)
+  let lastIdx = 0;
+  while (curve[lastIdx].endpoint.x <= MAX_X)
   {
-    // Generate next control point at least as far as the latest control point.
-    // This ensures that the track does not curve back around to the left.
-    if (trackPositionX < curve[lastCurveIndex].trackPosition.x)
-      trackPositionX = curve[lastCurveIndex].trackPosition.x;
-    else
-      trackPositionX++;
+    // Generate the first control point, which will be a reflection of the
+    // previous curve's second control point.
+    let ctrlPt1X = 2 * curve[lastIdx].endpoint.x - curve[lastIdx].controlPoint2.x;
+    let ctrlPt1Y = 2 * curve[lastIdx].endpoint.y - curve[lastIdx].controlPoint2.y;
 
-    // Randomly determine whether we:
-    //  0) continue the last curve.
-    //  1) change to a new curve
-    // TODO: Do we need to swap directions? If our endpoints' Y-coordinate and 
-    // our control points' Y-coordinate never exceed our bounds, then we can
-    // just generate to our hearts content at random. Whether that's *pleasing*
-    // to play with and look at, well who knows.
-    // TODO: Support a reflected curve? Think through the implications to make sure
-    // they don't break the track generation.
-    const curveChange = Math.floor(Math.random() * 2);
+    // Randomly generate the second control point. This should be to the
+    // left of endpoint to generate a pleasing curve, and to the right
+    // of this curve's first control point.
+    let ctrlPt2X = Math.random() * (MAX_2ND_CP_X_DELTA - MIN_2ND_CP_X_DELTA) + ctrlPt1X + MIN_2ND_CP_X_DELTA;
+    let ctrlPt2Y = Math.random() * (MAX_Y - MIN_Y);
 
-    if (curveChange !== 0)
-    {
-      const newCurveIndex = lastCurveIndex + 1;
+    // Generate next endpoint. This should be to the right of this curve's
+    // second control point.
+    let endPtX = Math.random() *
+      (MAX_ENDPT_TO_CP2_DELTA - MIN_ENDPT_TO_CP2_DELTA) + ctrlPt2X + MIN_ENDPT_TO_CP2_DELTA;
 
-      // We are changing the curve, generate a Y coordinate for the start point
-      // of this new bezier curve.
-      const trackPositionY = Math.floor(Math.random() * (maxY - minY) + minY);
+    let endPtY = Math.random() * (MAX_Y - MIN_Y);
 
-      // Generate a new control point
-      const controlPointX = Math.ceil(
-        Math.random() * 
-        (Math.min(trackPositionX + maxControlPointXDisplacement, maxX) - trackPositionX) +
-        trackPositionX); // Want at least +1
-      
-      const controlPointY = Math.floor(Math.random() * (maxY - minY) + minY);
-
-      curve[newCurveIndex] = makeCurvePoint(trackPositionX, trackPositionY, controlPointX, controlPointY);
-
-      lastCurveIndex = newCurveIndex;
-    }
+    curve.push(makeCubicBezier(ctrlPt1X, ctrlPt1Y, ctrlPt2X, ctrlPt2Y, endPtX, endPtY));
+    lastIdx++;
   }
 
   return {
-    // Bezier points (x, y)
-    curve,
-    // Indexes into bezier point array (start, end)
-    hazards: [[1, 2]]
+    curve: curve,
+    hazards: [[1,2]]
   }
 }
 
-function makeCurvePoint(trackPositionX, trackPositionY, controlPointX, controlPointY)
+function makeCubicBezier(ctrlPt1X, ctrlPt1Y, ctrlPt2X, ctrlPt2Y, endPtX, endPtY)
 {
   return {
-    trackPosition: { x: trackPositionX, y: trackPositionY },
-    controlPoint: { x: controlPointX, y: controlPointY }
+    controlPoint1: {x: ctrlPt1X, y: ctrlPt1Y},
+    controlPoint2: {x: ctrlPt2X, y: ctrlPt2Y},
+    endpoint: {x: endPtX, y: endPtY}
   }
 }
