@@ -2,6 +2,10 @@ import React from 'react';
 import { Group, Shape } from 'react-art';
 import { xOffset as playerGameXGap } from '../game/player';
 
+const LIGHT_AQUADUCT_COLOR = 0xAAA;
+const DARK_AQUADUCT_COLOR = 0x999;
+const HAZARD_ZONE_COLOR = 0xAD4C23;
+
 export default function Level ({curve, hazards, xOffset, unitLength}) {
   const trackGameWindowLeft = xOffset - playerGameXGap; // The left most visible part of the track in game units -- uhh handle the < 0 case.
 
@@ -91,13 +95,13 @@ function WideAquaductSegment({originPoint, bezierCurve, isHazard, windowLeft, un
       windowLeft={windowLeft}
       unitLength={unitLength}
       strokeWidth={0.75 * unitLength}
-      strokeColor={0xAAA}
+      strokeColor={DARK_AQUADUCT_COLOR}
     />
   );
 }
 
 function NarrowAquaductSegment({originPoint, bezierCurve, isHazard, windowLeft, unitLength}) {
-  const strokeColor = isHazard ? 0xAD4C23 : 0x999;
+  const strokeColor = isHazard ? HAZARD_ZONE_COLOR : LIGHT_AQUADUCT_COLOR;
   return (
     <GenericAquaduct
       originPoint={originPoint}

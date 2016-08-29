@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Game from './Game.js'
 import TitleScreen from './TitleScreen.js'
+import GameOver from './GameOver.js'
 
 import { GAMEMODE } from '../game/core.js';
 
@@ -10,6 +11,7 @@ export default class Aquaductulous extends Component {
 
     this.showTitle = this.updateGameMode.bind(this, GAMEMODE.Title);
     this.showGame = this.updateGameMode.bind(this, GAMEMODE.Playing);
+    this.showGameOver = this.updateGameMode.bind(this, GAMEMODE.GameOver);
 
     this.state = {
       gameMode: GAMEMODE.Title
@@ -32,7 +34,15 @@ export default class Aquaductulous extends Component {
         )
       case GAMEMODE.Playing:
         return (
-          <Game />
+          <Game
+            showGameOverCallback={this.showGameOver} 
+          />
+        );
+      case GAMEMODE.GameOver:
+        return (
+          <GameOver
+            showTitleScreenCallback={this.showTitle}
+          />
         );
     }
   }

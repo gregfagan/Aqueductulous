@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Surface, Text } from 'react-art';
 
-import { updateGameMode, GAMEMODE } from '../game/core.js'
-
 import Background from './Background'
 
 const containerStyle = {

@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { Surface } from 'react-art';
 
-import { createInitialState, updateInput, updateTime } from '../game/core';
+import { createInitialState,
+          isPlayerAtEndOfTrack,
+          updateInput,
+          updateTime } from '../game/core';
 
 import Player from './Player';
 import Level from './Level';
@@ -26,7 +29,7 @@ const screenDimensions = {
 const unitLength = screenDimensions.width / 16;
 
 export default class Game extends Component {
-  constructor() {
+  constructor({showGameOverCallback}) {
     super();
 
     this.state = createInitialState();
@@ -34,10 +37,16 @@ export default class Game extends Component {
     this.beginAcceleration = this.updateInput.bind(this, true);
     this.endAcceleration = this.updateInput.bind(this, false);
 
+    this.showGameOver = showGameOverCallback;
+
     const startTime = performance.now();
-    this.updateTime = currentTime => {
+    this.updateTime = currentTime => {        
       this.setState(updateTime(this.state, currentTime - startTime));
       this.raf = requestAnimationFrame(this.updateTime);
+  
+      if (isPlayerAtEndOfTrack(this.state))
+        this.showGameOver();
+  
     }
     this.raf = requestAnimationFrame(this.updateTime);
   }
@@ -52,6 +61,7 @@ export default class Game extends Component {
 
   render() {
     const { player, level, elapsedTime } = this.state;
+
     return (
       <div
         style={containerStyle}

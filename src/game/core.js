@@ -17,7 +17,7 @@ const VELOCITY = {
 export const GAMEMODE = {
   Title: 1,
   Playing: 2,
-  Finished: 3
+  GameOver: 3
 }
 
 const HAZARD_RESULTS = {
@@ -82,6 +82,9 @@ export function updateGameMode(state, gameMode) {
   };
 }
 
+export function isPlayerAtEndOfTrack(state) {
+  return state.player.position >= state.level.curve[state.level.curve.length - 1].endpoint.x;
+}
 function updateHazardEvent(state) {
   const { player, level, elapsedTime } = state;
   const { position, accelerating } = player;
