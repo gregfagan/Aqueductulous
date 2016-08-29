@@ -71,6 +71,8 @@ export function updateTime(state, elapsedTime) {
       position: position + velocity * hazardVelocityModifier(state) * dt,
     }
   };
+
+  return updateHazardEvent(updatedMotion);
 }
 
 export function updateGameMode(state, gameMode) {
@@ -78,8 +80,6 @@ export function updateGameMode(state, gameMode) {
     ...state,
     gameMode
   };
-
-  return updateHazardEvent(updatedMotion);
 }
 
 function updateHazardEvent(state) {
