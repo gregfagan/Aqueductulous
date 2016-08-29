@@ -3,6 +3,7 @@ import { Surface } from 'react-art';
 
 import ShadowText from './ShadowText';
 import Background from './Background'
+import Button from './Button';
 
 const containerStyle = {
   position: 'absolute',
@@ -20,15 +21,11 @@ const screenDimensions = {
 }
 
 const unitLength = screenDimensions.width / 16;
+const screenify = x => x * unitLength;
 
 export default class TitleScreen extends Component {
-  constructor({startGameCallback}) {
-    super();
-
-    this.startInvoked = startGameCallback;
-  }
-
   render() {
+    const { startGameCallback } = this.props;
     const titleProps = {
       font: { fontSize: 72 },
     };
@@ -44,16 +41,9 @@ export default class TitleScreen extends Component {
     const title = "AQUADUCTULOUS!!";
     const description1 = "Friends! Romans! Countrymen!";
     const description2 = "They're all relying on YOU to quench their thirst!";
-    const description3 = "Press or click to get flowing!";
 
     return (
-      <div
-        style={containerStyle}
-        tabIndex={0}
-        onMouseUp={this.startInvoked}
-        onKeyUp={this.startInvoked}
-        ref={view => view && view.focus()}
-      >
+      <div style={containerStyle}>
         <Surface {...screenDimensions}>
           <Background xOffset={0} unitLength={unitLength}/>
           <ShadowText 
@@ -77,13 +67,15 @@ export default class TitleScreen extends Component {
           >
             {description2}
           </ShadowText>
-          <ShadowText 
-            x={359}
+          <Button 
+            x={screenify(5.5)}
             y={291}
-            {...descriptionProps}
+            width={screenify(5)}
+            height={screenify(1.5)}
+            onPress={startGameCallback}
           >
-            {description3}
-          </ShadowText>
+            Play
+          </Button>
         </Surface>
       </div>
     );

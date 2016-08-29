@@ -45,8 +45,10 @@ export default class Game extends Component {
       this.raf = requestAnimationFrame(this.updateTime);
   
       if (isPlayerAtEndOfTrack(this.state))
-        this.showGameOver();
-  
+        this.showGameOver({
+          time: this.state.elapsedTime,
+          won: true,
+        });
     }
     this.raf = requestAnimationFrame(this.updateTime);
   }

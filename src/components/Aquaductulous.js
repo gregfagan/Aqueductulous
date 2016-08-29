@@ -11,21 +11,27 @@ export default class Aquaductulous extends Component {
 
     this.showTitle = this.updateGameMode.bind(this, GAMEMODE.Title);
     this.showGame = this.updateGameMode.bind(this, GAMEMODE.Playing);
-    this.showGameOver = this.updateGameMode.bind(this, GAMEMODE.GameOver);
+    this.showGameOver = result => {
+      this.updateGameMode(GAMEMODE.GameOver, result);
+    }
 
     this.state = {
-      gameMode: GAMEMODE.Title
+      gameMode: GAMEMODE.Title,
+      gameResult: undefined, /*{
+        time: 0,
+        won: false,
+      }*/
     }
   }
 
-  updateGameMode(gameMode) {
-    this.setState(
-      {gameMode: gameMode}
-    )
+  updateGameMode(gameMode, gameResult) {
+    this.setState({gameMode, gameResult});
   }
 
   render() {
-    switch (this.state.gameMode) {
+    const { gameMode, gameResult } = this.state;
+
+    switch (gameMode) {
       case GAMEMODE.Title:
         return (
           <TitleScreen
@@ -41,9 +47,12 @@ export default class Aquaductulous extends Component {
       case GAMEMODE.GameOver:
         return (
           <GameOver
-            showTitleScreenCallback={this.showTitle}
+            result={gameResult}
+            startGameCallback={this.showGame}
           />
         );
+      default:
+        return null;
     }
   }
 }

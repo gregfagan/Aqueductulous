@@ -2,7 +2,7 @@ import Bezier from 'bezier-js';
 
 export function createLevel(seed)
 {
-  const MAX_X = 980;
+  const MAX_X = 120;
   const MAX_Y = 6.5;
   const MIN_Y = 2.5;
 
@@ -25,11 +25,13 @@ export function createLevel(seed)
   let curve = [];
   let hazards = [];
 
-  // Generate first bezier curve. Start with something gentle.
-  curve.push(makeCubicBezier(0, 4.5, 2, 4.5, 5, randoCalrissian() * 2 + 3.5));
+  // Generate first segments. Start straight line, follow with something gentle.
+  curve.push(makeCubicBezier(0, 4.5, 2, 4.5, 5, 4.5));
   hazards.push(false);  // No hazard on first segment!
+  curve.push(makeCubicBezier(5.5, 4.5, 7.5, 4.5, 9, randoCalrissian() * 2 + 3.5));
+  hazards.push(false);  // No hazard on second segment!
 
-  let lastIdx = 0;
+  let lastIdx = 1;
   while (curve[lastIdx].endpoint.x <= MAX_X)
   {
     let isSegmentHazard = false;
@@ -66,6 +68,15 @@ export function createLevel(seed)
 
     lastIdx++;
   }
+
+  // Generate last segments as straight line
+  const lastX = curve[lastIdx].endpoint.x;
+  let lastCtrlPt1X = 2 * curve[lastIdx].endpoint.x - curve[lastIdx].controlPoint2.x;
+  let lastCtrlPt1Y = 2 * curve[lastIdx].endpoint.y - curve[lastIdx].controlPoint2.y;
+  curve.push(makeCubicBezier(lastCtrlPt1X, lastCtrlPt1Y, lastX + 3, 4.5, lastX + 5, 4.5));
+  hazards.push(false);
+  curve.push(makeCubicBezier(2 * (lastX + 5) - (lastX + 3), 4.5, lastX + 7, 4.5, lastX + 10, 4.5));
+  hazards.push(false);
 
   return { curve, hazards };
 }

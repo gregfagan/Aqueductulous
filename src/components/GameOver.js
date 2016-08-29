@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Surface, Text } from 'react-art';
 
-import Background from './Background'
+import Button from './Button';
 
 const containerStyle = {
   position: 'absolute',
@@ -23,30 +23,39 @@ const unitLength = screenDimensions.width / 16;
 function screenify(x) { return x * unitLength; }
 
 export default class GameOver extends Component {
-  constructor({showTitleScreenCallback}) {
-    super();
-    this.titleScreenInvoked = showTitleScreenCallback;
-  }
-
   render() {
+    const { startGameCallback, result } = this.props;
     return (
       <div 
         style={containerStyle}
         tabIndex={0}
-        onMouseUp={this.titleScreenInvoked}
-        onKeyUp={this.titleScreenInvoked}
-        ref={view => view && view.focus()}
       >
         <Surface {...screenDimensions}>
           <Text 
             x={screenify(8)}
-            y={screenify(3)}
+            y={screenify(2)}
             fill={"#FFF"}
-            font={'bold 24px "Arial"'}
+            font={'bold 40px "Arial"'}
             alignment={"middle"}
           >
-            GAME OVER!
+            {`YOU ${result.won ? 'WIN' : 'LOSE'}!`}
           </Text>
+          <Text 
+            x={screenify(8)}
+            y={screenify(3)}
+            fill={"#FFF"}
+            font={'16px "Arial"'}
+            alignment={"middle"}
+          >
+            {`${(result.time/1000).toFixed(2)} seconds`}
+          </Text>
+          <Button
+            x={screenify(5.5)} y={screenify(4)}
+            width={screenify(5)} height={screenify(1.5)}
+            onPress={startGameCallback}
+          >
+            New Game
+          </Button>
         </Surface>
       </div>
     );
