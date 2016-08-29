@@ -1,6 +1,5 @@
 import React from 'react';
 import { Group, Shape } from 'react-art';
-import Circle from 'react-art/shapes/circle';
 
 export default function Level ({curve, hazards, xOffset, unitLength}) {
   const playerGameXGap = 4; // Distance of player from left screen edge in game units.

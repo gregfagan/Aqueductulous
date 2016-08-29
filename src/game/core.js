@@ -14,6 +14,12 @@ const VELOCITY = {
   FAST: 8
 };
 
+export const GAMEMODE = {
+  Title: 1,
+  Playing: 2,
+  Finished: 3
+}
+
 export function createInitialState() {
   return {
     elapsedTime: 0,
@@ -21,7 +27,7 @@ export function createInitialState() {
       position: 0,
       accelerating: false,
     },
-    level: createLevel(),
+    level: createLevel()
   }
 }
 
@@ -46,5 +52,12 @@ export function updateTime(state, elapsedTime) {
       ...state.player,
       position: position + velocity * dt,
     }
+  };
+}
+
+export function updateGameMode(state, gameMode) {
+  return {
+    ...state,
+    gameMode
   };
 }
