@@ -21,7 +21,7 @@ const containerStyle = {
   justifyContent: 'center',
   alignItems: 'center',
   backgroundColor: '#666361',
-  webkitTapHighlightColor: 'rgba(0,0,0,0)',
+  WebkitTapHighlightColor: 'rgba(0,0,0,0)',
 };
 
 // TODO: Make this dynamic/responsive
