@@ -5,7 +5,7 @@ import GameOver from './GameOver.js'
 
 import { GAMEMODE } from '../game/core.js';
 
-export default class Aquaductulous extends Component {
+export default class Aqueductulous extends Component {
   constructor() {
     super();
 

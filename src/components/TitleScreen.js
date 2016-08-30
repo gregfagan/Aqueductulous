@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Surface } from 'react-art';
+import { Surface, Text } from 'react-art';
 
 import ShadowText from './ShadowText';
 import Background from './Background'
@@ -27,20 +27,27 @@ export default class TitleScreen extends Component {
   render() {
     const { startGameCallback } = this.props;
     const titleProps = {
-      font: { fontSize: 72 },
+      font: { fontSize: 66 },
     };
 
     const descriptionProps = {
       shadowOffsetRatio: 1/8,
       font: {
-        fontSize: 24,
+        fontSize: 18,
         fontStyle: 'italic',
-      }
+      },
+      fill: '#fff',
+      alignment: 'center',
     };
 
-    const title = "AQUADUCTULOUS!!";
-    const description1 = "Friends! Romans! Countrymen!";
-    const description2 = "They're all relying on YOU to quench their thirst!";
+    const title = "AQUEDUCTULOUS!!";
+    const description = [
+      "Friends! Romans! Countrymen!",
+      "Defeat Vitruvius in Caesar's game to become top engineer.",
+      "Control the flow rate of your aqueduct by pressing any button.",
+      "Watch out though: your builders made mistakes, and some",
+      "sections of the track can't handle high speeds. Good luck!"
+    ]
 
     return (
       <div style={containerStyle}>
@@ -48,30 +55,19 @@ export default class TitleScreen extends Component {
           <Background xOffset={0} unitLength={unitLength}/>
           <ShadowText 
             x={360}
-            y={105}
+            y={50}
             {...titleProps}
           >
             {title}
           </ShadowText>
-          <ShadowText 
-            x={359}
-            y={201}
-            {...descriptionProps}
-          >
-            {description1}
-          </ShadowText>
-          <ShadowText 
-            x={359}
-            y={231}
-            {...descriptionProps}
-          >
-            {description2}
-          </ShadowText>
+          <Text x={359} y={146} {...descriptionProps}>
+            {description}
+          </Text>
           <Button 
             x={screenify(5.5)}
-            y={291}
+            y={275}
             width={screenify(5)}
-            height={screenify(1.5)}
+            height={screenify(1.6)}
             onPress={startGameCallback}
           >
             Play
