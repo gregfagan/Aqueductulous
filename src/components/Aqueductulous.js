@@ -11,7 +11,7 @@ export default class Aqueductulous extends Component {
 
     this.showTitle = this.updateGameMode.bind(this, GAMEMODE.Title);
     this.newGame = () => {
-      window.history.replaceState({}, '', '/' + window.btoa((Math.random() * 10e2).toFixed(0)));
+      window.history.replaceState({}, '', '#' + window.btoa((Math.random() * 10e2).toFixed(0)));
       this.updateGameMode(GAMEMODE.Playing);
     };
     this.rematch = this.updateGameMode.bind(this, GAMEMODE.Playing);
@@ -34,7 +34,7 @@ export default class Aqueductulous extends Component {
 
   render() {
     const { gameMode, gameResult } = this.state;
-    const hasSeed = window.location.pathname !== '/';
+    const hasSeed = !!window.location.hash;
 
     switch (gameMode) {
       case GAMEMODE.Title:
@@ -46,6 +46,7 @@ export default class Aqueductulous extends Component {
       case GAMEMODE.Playing:
         return (
           <Game
+            seed={window.location.hash}
             showGameOverCallback={this.showGameOver} 
           />
         );

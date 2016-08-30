@@ -32,10 +32,9 @@ const screenDimensions = {
 const unitLength = screenDimensions.width / 16;
 
 export default class Game extends Component {
-  constructor({showGameOverCallback}) {
+  constructor({seed, showGameOverCallback}) {
     super();
 
-    const seed = window.location.pathname;
     this.state = createInitialState(seed);
 
     this.beginAcceleration = this.updateInput.bind(this, true);
