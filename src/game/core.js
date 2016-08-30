@@ -30,7 +30,7 @@ export const HAZARD_RESULTS = {
 const HAZARD_EVENT_TIME = 1;
 const HAZARD_DETECTION_OFFSET = 0;
 
-export function createInitialState() {
+export function createInitialState(seed) {
   return {
     elapsedTime: 0,
     player: {
@@ -41,7 +41,7 @@ export function createInitialState() {
         result: undefined,
       }, */
     },
-    level: createLevel()
+    level: createLevel(seed)
   }
 }
 

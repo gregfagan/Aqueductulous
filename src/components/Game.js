@@ -32,7 +32,8 @@ export default class Game extends Component {
   constructor({showGameOverCallback}) {
     super();
 
-    this.state = createInitialState();
+    const seed = window.location.pathname;
+    this.state = createInitialState(seed);
 
     this.beginAcceleration = this.updateInput.bind(this, true);
     this.endAcceleration = this.updateInput.bind(this, false);

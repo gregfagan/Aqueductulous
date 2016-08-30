@@ -24,7 +24,7 @@ function screenify(x) { return x * unitLength; }
 
 export default class GameOver extends Component {
   render() {
-    const { startGameCallback, result } = this.props;
+    const { result, onRematch, onNewGame } = this.props;
     return (
       <div 
         style={containerStyle}
@@ -33,7 +33,7 @@ export default class GameOver extends Component {
         <Surface {...screenDimensions}>
           <Text 
             x={screenify(8)}
-            y={screenify(2)}
+            y={screenify(1.5)}
             fill={"#FFF"}
             font={'bold 40px "Arial"'}
             alignment={"middle"}
@@ -42,7 +42,7 @@ export default class GameOver extends Component {
           </Text>
           <Text 
             x={screenify(8)}
-            y={screenify(3)}
+            y={screenify(2.5)}
             fill={"#FFF"}
             font={'16px "Arial"'}
             alignment={"middle"}
@@ -50,9 +50,16 @@ export default class GameOver extends Component {
             {`${(result.time/1000).toFixed(2)} seconds`}
           </Text>
           <Button
-            x={screenify(5.5)} y={screenify(4)}
+            x={screenify(5.5)} y={screenify(3.5)}
             width={screenify(5)} height={screenify(1.5)}
-            onPress={startGameCallback}
+            onPress={onRematch}
+          >
+            Rematch
+          </Button>
+          <Button
+            x={screenify(5.5)} y={screenify(5.5)}
+            width={screenify(5)} height={screenify(1.5)}
+            onPress={onNewGame}
           >
             New Game
           </Button>

@@ -1,4 +1,5 @@
 import Bezier from 'bezier-js';
+import makeRandomGenerator from 'seed-random';
 
 export function createLevel(seed)
 {
@@ -20,7 +21,7 @@ export function createLevel(seed)
 
   const HAZARD_PERCENTAGE = 0.49;
 
-  const randoCalrissian = Math.random;  // Replace this with seedable function later.
+  const randoCalrissian = makeRandomGenerator(seed || Math.random());
 
   let curve = [];
   let hazards = [];
