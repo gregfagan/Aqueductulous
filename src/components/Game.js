@@ -21,6 +21,7 @@ const containerStyle = {
   justifyContent: 'center',
   alignItems: 'center',
   backgroundColor: '#666361',
+  webkitTapHighlightColor: 'rgba(0,0,0,0)',
 };
 
 // TODO: Make this dynamic/responsive
@@ -78,6 +79,9 @@ export default class Game extends Component {
         onMouseUp={this.endAcceleration}
         onKeyDown={this.beginAcceleration}
         onKeyUp={this.endAcceleration}
+        onTouchStart={e => { e.preventDefault(); this.beginAcceleration(); }}
+        onTouchEnd={e => { e.preventDefault(); this.endAcceleration(); }}
+        onTouchCancel={e => { e.preventDefault(); this.endAcceleration(); }}
         ref={view => view && view.focus()}
       >
         <Surface {...screenDimensions}>
