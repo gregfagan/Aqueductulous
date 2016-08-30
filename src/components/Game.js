@@ -3,6 +3,7 @@ import { Surface } from 'react-art';
 
 import { createInitialState,
           isPlayerAtEndOfTrack,
+          isEnemyAtEndOfTrack,
           updateInput,
           updateTime } from '../game/core';
 
@@ -47,11 +48,14 @@ export default class Game extends Component {
       this.setState(updateTime(this.state, currentTime - startTime));
       this.raf = requestAnimationFrame(this.updateTime);
   
-      if (isPlayerAtEndOfTrack(this.state))
+      // A tie is a loss!
+      if (isPlayerAtEndOfTrack(this.state)) {
         this.showGameOver({
           time: this.state.elapsedTime,
-          won: true,
-        });
+          won: isEnemyAtEndOfTrack(this.state.enemyPlayer.position, this.state.enemyLevel.curve) ?
+            false:
+            true,
+        })};
     }
     this.raf = requestAnimationFrame(this.updateTime);
   }
