@@ -23,7 +23,7 @@ export default function HazardFeedback ({ player, level, elapsedTime, unitLength
   const displayProps = lastHazardEvent && lastHazardEvent.result === HAZARD_RESULTS.FAIL
   ? {
     x: center.x + Math.sin(Math.PI * 10 * t) * unitLength / 8,
-    y: center.y + yOffset * unitLength,
+    y: center.y + yOffset * 0.75 * unitLength,
     shadowColor: HAZARD_ZONE_COLOR,
     font: { fontSize: 22 }
   }
