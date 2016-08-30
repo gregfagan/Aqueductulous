@@ -31,12 +31,19 @@ export default class TitleScreen extends Component {
     };
 
     const descriptionProps = {
-      shadowOffsetRatio: 1/8,
       font: {
         fontSize: 18,
         fontStyle: 'italic',
       },
       fill: '#fff',
+      alignment: 'center',
+    };
+
+    const creditsProps = {
+      font: {
+        fontSize: 14,
+      },
+      fill: 'rgba(255,255,255,0.5)',
       alignment: 'center',
     };
 
@@ -65,13 +72,14 @@ export default class TitleScreen extends Component {
           </Text>
           <Button 
             x={screenify(5.5)}
-            y={275}
+            y={271}
             width={screenify(5)}
             height={screenify(1.6)}
             onPress={startGameCallback}
           >
             Play
           </Button>
+          <Text x={359} y={375} {...creditsProps}>a Ludum Dare 36 Jam game by Alan Wong and Greg Fagan</Text>
         </Surface>
       </div>
     );
