@@ -43,7 +43,7 @@ export function createInitialState(seed) {
         result: undefined,
       }, */
     },
-    level: createLevel(6, seed),
+    level: createLevel(3, seed),
     enemyPlayer: {
       position: 0,
       accelerating: false,
@@ -51,7 +51,7 @@ export function createInitialState(seed) {
       enemyXOffset: 0,
     },
     enemyAI: createEnemyProfile(),
-    enemyLevel: createLevel(3, seed + 1),
+    enemyLevel: createLevel(6, seed + 1),
   }
 }
 
