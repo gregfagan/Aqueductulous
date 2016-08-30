@@ -1,6 +1,6 @@
 import React from 'react';
 import { Group, Shape } from 'react-art';
-import { xOffset as playerGameXGap } from '../game/player';
+import { playerXOffset as playerGameXGap } from '../game/player';
 
 const LIGHT_AQUADUCT_COLOR = 0xAAA;
 const DARK_AQUADUCT_COLOR = 0x999;
@@ -34,7 +34,7 @@ export default function Level ({curve, hazards, xOffset, unitLength}) {
     controlPoint2: {x: NaN, y: NaN},  // not used
     endpoint: {
       x: curveLeftIndex === 0 ? 0 : curve[curveLeftIndex - 1].endpoint.x,
-      y: curveLeftIndex === 0 ? 4.5 : curve[curveLeftIndex - 1].endpoint.y
+      y: curveLeftIndex === 0 ? curve[curveLeftIndex].endpoint.y : curve[curveLeftIndex - 1].endpoint.y
     }
   }
 
@@ -44,10 +44,28 @@ export default function Level ({curve, hazards, xOffset, unitLength}) {
   let visibleHazards = [false];
   Array.prototype.push.apply(visibleHazards, hazards.slice(curveLeftIndex, curveRightIndex + 1)); // first element faked to match the fake drawing origin point
 
+  // This draws non-hazard sections first, then draws hazard sections after.
+  // This is a pretty naive double loop but our visibleCurve arrays should 
+  // be small enough that this isn't too bad.
   return (
     <Group>
       { visibleCurve.map((value,index,array) => {
-        return (index !== 0)
+        return (index !== 0 && !visibleHazards[index])
+          ? (
+            <AquaductSegment
+              key={index}
+              originPoint={ {x: array[index - 1].endpoint.x, y: array[index - 1].endpoint.y} }
+              bezierCurve={ array[index] }
+              isHazard={ visibleHazards[index] }
+              windowLeft={ trackGameWindowLeft }
+              unitLength={ unitLength }
+            />
+          )
+          : undefined;
+        }
+      )}
+      { visibleCurve.map((value,index,array) => {
+        return (index !== 0 && visibleHazards[index])
           ? (
             <AquaductSegment
               key={index}

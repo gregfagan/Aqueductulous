@@ -1,9 +1,10 @@
 import Bezier from 'bezier-js';
 import makeRandomGenerator from 'seed-random';
 
-export function createLevel(seed)
+export function createLevel(startingYOffset=4.5, seed)
 {
   const MAX_X = 120;
+
   const MAX_Y = 6.5;
   const MIN_Y = 2.5;
 
@@ -27,9 +28,9 @@ export function createLevel(seed)
   let hazards = [];
 
   // Generate first segments. Start straight line, follow with something gentle.
-  curve.push(makeCubicBezier(0, 4.5, 2, 4.5, 5, 4.5));
+  curve.push(makeCubicBezier(0, startingYOffset, 2, startingYOffset, 5, startingYOffset));
   hazards.push(false);  // No hazard on first segment!
-  curve.push(makeCubicBezier(5.5, 4.5, 7.5, 4.5, 9, randoCalrissian() * 2 + 3.5));
+  curve.push(makeCubicBezier(5.5, startingYOffset, 7.5, startingYOffset, 9, randoCalrissian() * 2 + 3.5));
   hazards.push(false);  // No hazard on second segment!
 
   let lastIdx = 1;
@@ -103,7 +104,7 @@ export function indexForX(curve, x) {
 export function segmentForIndex(curve, idx) {
   const startpoint = idx > 0
     ? curve[idx - 1].endpoint
-    : {x: 0, y: 4.5};
+    : {x: 0, y: curve[0].endpoint.y};
 
   const segment = curve[idx];
   return {

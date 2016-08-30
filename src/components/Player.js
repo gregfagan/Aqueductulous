@@ -5,14 +5,16 @@ import BubbleEffect from './BubbleEffect';
 import SplashEffect from './SplashEffect';
 
 import { trailingPathForX, tangentForX } from '../game/level';
-import { playerCenter, xOffset } from '../game/player';
+import { playerCenter, playerXOffset } from '../game/player';
 
 function PlayerTrail ({
   position,
   level,
   unitLength,
   size,
-  color
+  color,
+  isHuman,
+  xOffset,
 }) {
   return (
     <Shape
@@ -24,10 +26,10 @@ function PlayerTrail ({
   )
 }
 
-function PlayerHead ({ position, size, unitLength, color, elapsedTime, accelerating, level }) {
+function PlayerHead ({ position, size, unitLength, color, elapsedTime, accelerating, level, xOffset }) {
   const radius = size/2 * unitLength;
 
-  const center = playerCenter(position, level, unitLength);
+  const center = playerCenter(position, level, unitLength, xOffset);
   const tangent = tangentForX(level.curve, position);
   const angle = Math.atan(tangent.y / tangent.x) * 180 / Math.PI;
 
@@ -70,6 +72,7 @@ export default function Player ({
   elapsedTime,
   size,
   color,
+  xOffset,
 }) {
   return (
     <Group>
@@ -79,6 +82,7 @@ export default function Player ({
         level={level}
         size={size}
         color={color}
+        xOffset={xOffset}
       />
       <PlayerHead
         unitLength={unitLength}
@@ -88,6 +92,7 @@ export default function Player ({
         color={color}
         elapsedTime={elapsedTime}
         accelerating={accelerating}
+        xOffset={xOffset}
       />
     </Group>
   );

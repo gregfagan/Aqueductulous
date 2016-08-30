@@ -6,6 +6,8 @@ import { createInitialState,
           updateInput,
           updateTime } from '../game/core';
 
+import { playerXOffset } from '../game/player'
+
 import Player from './Player';
 import Level from './Level';
 import Background from './Background';
@@ -63,7 +65,7 @@ export default class Game extends Component {
   }
 
   render() {
-    const { player, level, elapsedTime } = this.state;
+    const { player, level, enemyPlayer, enemyLevel, elapsedTime } = this.state;
 
     return (
       <div
@@ -77,12 +79,23 @@ export default class Game extends Component {
       >
         <Surface {...screenDimensions}>
           <Background xOffset={-player.position * unitLength} unitLength={unitLength}/>
-          <Level {...level} xOffset={player.position} unitLength={unitLength}/>
+          <Level key={"vitrviusLevel"} {...enemyLevel} xOffset={player.position} unitLength={unitLength}/>
           <Player
+            key={"vitrvius"}
+            {...enemyPlayer}
+            level={enemyLevel}
+            unitLength={unitLength}
+            elapsedTime={elapsedTime}
+            xOffset={enemyPlayer.xOffset}
+          />
+          <Level key={"level"} {...level} xOffset={player.position} unitLength={unitLength}/>
+          <Player
+            key={"player"}
             {...player}
             level={level}
             unitLength={unitLength}
             elapsedTime={elapsedTime}
+            xOffset={playerXOffset}
           />
           <HazardFeedback
             player={player}
