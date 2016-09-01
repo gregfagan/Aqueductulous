@@ -4,32 +4,31 @@ import { Group, Text } from 'react-art';
 import FullWindowAspectFitSurface from './FullWindowAspectFitSurface';
 import Button from './Button';
 
+const baseText = {
+  fill: '#fff',
+  font: {
+    fontFamily: 'sans-serif',
+  },
+  alignment: 'middle',
+};
+
 const ResultText = ({fontSize, ...rest}) => <Text
-  fill={"#FFF"}
-  font={{
-    fontSize,
-    fontWeight: 'bold',
-    fontFamily: 'sans-serif'
-  }}
-  alignment={"middle"}
+  {...baseText}
+  font={{ ...baseText.font, fontSize, fontWeight: 'bold' }}
   {...rest}
 />;
 
 const TimeText = ({fontSize, ...rest}) => <Text
-  fill={"#FFF"}
-  font={{
-    fontSize,
-    fontFamily: 'sans-serif'
-  }}
-  alignment={"middle"}
+  {...baseText}
+  font={{ ...baseText.font, fontSize }}
   {...rest}
 />;
 
 function GameOverLayout ({
-  result={ won: true, time: 0 },
+  result = { won: true, time: 0 },
   onRematch,
   onNewGame,
-  unitLength=1,
+  unitLength = 1,
 }) {
   const screenify = x => x * unitLength;
   return (

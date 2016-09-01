@@ -15,7 +15,7 @@ import Background from './Background';
 import HazardFeedback from './HazardFeedback';
 
 export default class Game extends Component {
-  constructor({seed, showGameOverCallback}) {
+  constructor({seed, onGameOver}) {
     super();
 
     this.state = createInitialState(seed);
@@ -23,23 +23,25 @@ export default class Game extends Component {
     this.beginAcceleration = this.updateInput.bind(this, true);
     this.endAcceleration = this.updateInput.bind(this, false);
 
-    this.showGameOver = showGameOverCallback;
-
     const startTime = performance.now();
     this.updateTime = currentTime => {
-      this.setState(updateTime(this.state, currentTime - startTime));
-  
-      // A tie is a loss!
-      if (isPlayerAtEndOfTrack(this.state)) {
-        this.showGameOver({
-          time: this.state.elapsedTime,
-          won: isEnemyAtEndOfTrack(this.state.enemyPlayer.position, this.state.enemyLevel.curve)
-            ? false
-            : true
-        })
-      } else {
-        this.raf = requestAnimationFrame(this.updateTime);
-      }
+      this.setState(updateTime(this.state, currentTime - startTime), () => {
+        //
+        // After the state updates, check to see if the game has ended.
+        // If it has not, enqueue another rAF update.
+        //
+        // A tie is a loss!
+        if (isPlayerAtEndOfTrack(this.state)) {
+          onGameOver({
+            time: this.state.elapsedTime,
+            won: isEnemyAtEndOfTrack(this.state.enemyPlayer.position, this.state.enemyLevel.curve)
+              ? false
+              : true
+          })
+        } else {
+          this.raf = requestAnimationFrame(this.updateTime);
+        }
+      });
     }
     this.raf = requestAnimationFrame(this.updateTime);
   }

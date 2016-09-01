@@ -40,14 +40,14 @@ export default class Aqueductulous extends Component {
       case GAMEMODE.Title:
         return (
           <TitleScreen
-            startGameCallback={hasSeed ? this.rematch : this.newGame}
+            onStartGame={hasSeed ? this.rematch : this.newGame}
           />
         )
       case GAMEMODE.Playing:
         return (
           <Game
             seed={window.location.hash}
-            showGameOverCallback={this.showGameOver} 
+            onGameOver={this.showGameOver} 
           />
         );
       case GAMEMODE.GameOver:
