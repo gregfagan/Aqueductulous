@@ -25,12 +25,12 @@ export default function HazardFeedback ({ player, level, elapsedTime, unitLength
     x: center.x + Math.sin(Math.PI * 10 * t) * unitLength / 8,
     y: center.y + yOffset * 0.75 * unitLength,
     shadowColor: HAZARD_ZONE_COLOR,
-    font: { fontSize: 22 }
+    font: { fontSize: 22/45 * unitLength }
   }
   : {
     x: center.x,
     y: center.y + (yOffset/3 - easeElastic(t, 0.5, 0.3) * 0.75) * unitLength,
-    font: { fontSize: 22 * fontScale }
+    font: { fontSize: 22/45 * unitLength * fontScale }
   };
 
   return (
