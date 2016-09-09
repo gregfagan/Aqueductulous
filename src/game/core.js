@@ -16,6 +16,11 @@ const VELOCITY = {
   FAST: 4
 };
 
+const CHARACTER = {
+  PLAYER: 1,
+  ENEMY: 2,
+}
+
 export const GAMEMODE = {
   Title: 1,
   Playing: 2,
@@ -74,15 +79,18 @@ export function updateTime(state, elapsedTime) {
   const { position, accelerating } = state.player; 
   const velocity = accelerating ? VELOCITY.FAST : VELOCITY.SLOW;
 
+  const newPlayerPosition = position + velocity * hazardVelocityModifier(state) * dt;
+
   const isEnemyAcceleratingNow = isEnemyAcclerating(
     state.enemyLevel,
     state.enemyPlayer,
     state.enemyAI
   );
-
   const enemyVelocity = isEnemyAcceleratingNow ? VELOCITY.FAST : VELOCITY.SLOW;
-  const newPlayerPosition = position + velocity * hazardVelocityModifier(state) * dt;
-  const newEnemyPosition = state.enemyPlayer.position + enemyVelocity * enemyHazardVelocityModifier(state) * dt;
+  const newEnemyPosition = 
+    isEnemyAtEndOfTrack(state) ? 
+      state.enemyLevel.curve[state.enemyLevel.curve.length - 1].endpoint.x :
+      state.enemyPlayer.position + enemyVelocity * hazardVelocityModifier(state, CHARACTER.ENEMY) * dt;
 
   const updatedMotion = {
     ...state,
@@ -94,14 +102,12 @@ export function updateTime(state, elapsedTime) {
     enemyPlayer: {
       ...state.enemyPlayer,
       accelerating: isEnemyAcceleratingNow,
-      position: isEnemyAtEndOfTrack(newEnemyPosition, state.enemyLevel.curve) ?
-        state.enemyLevel.curve[state.enemyLevel.curve.length - 1].endpoint.x :
-        newEnemyPosition,
+      position: newEnemyPosition,
       xOffset: newEnemyPosition - (newPlayerPosition - playerXOffset)
     }
   };
 
-  return updateEnemyHazardEvent(updateHazardEvent(updatedMotion));
+  return updateHazardEvent(updateHazardEvent(updatedMotion, CHARACTER.PLAYER), CHARACTER.ENEMY);
 }
 
 export function updateGameMode(state, gameMode) {
@@ -112,17 +118,21 @@ export function updateGameMode(state, gameMode) {
 }
 
 export function isPlayerAtEndOfTrack(state) {
-  return state.player.position >= state.level.curve[state.level.curve.length - 1].endpoint.x;
+  return isAtEndOfTrack(state.player.position, state.level.curve);
 }
 
-export function isEnemyAtEndOfTrack(position, curve) {
+export function isEnemyAtEndOfTrack(state) {
+  return isAtEndOfTrack(state.enemyPlayer.position, state.enemyLevel.curve);
+}
+
+function isAtEndOfTrack(position, curve) {
   return position >= curve[curve.length - 1].endpoint.x;
 }
 
-function updateHazardEvent(state) {
-  const { player, level, elapsedTime } = state;
-  const { position, accelerating } = player;
-  const { curve, hazards } = level;
+function updateHazardEvent(state, character = CHARACTER.PLAYER) {
+  const { player, enemyPlayer, level, enemyLevel, elapsedTime } = state;
+  const { position, accelerating } = character === CHARACTER.PLAYER ? player : enemyPlayer;
+  const { curve, hazards } = character === CHARACTER.PLAYER ? level : enemyLevel;
   const positionVisualAdjust = position + HAZARD_DETECTION_OFFSET;
   const isHazard = hazards[indexForX(curve, positionVisualAdjust)];
 
@@ -144,59 +154,37 @@ function updateHazardEvent(state) {
   }
 
   if (hazardResult) {
-    return {
-      ...state,
-      player: {
-        ...player,
-        accelerating: hazardResult === HAZARD_RESULTS.FAIL ? false : accelerating,
-        lastHazardEvent: { time: elapsedTime, result: hazardResult },
+    const newAccelerating = hazardResult === HAZARD_RESULTS.FAIL ? false : accelerating;
+    const newLastHazardEvent = { time: elapsedTime, result: hazardResult }
+
+    if (character === CHARACTER.PLAYER) {
+      return {
+        ...state,
+        player: {
+          ...player,
+          accelerating: newAccelerating,
+          lastHazardEvent: newLastHazardEvent,
+        }
       }
     }
+    else if (character === CHARACTER.ENEMY) {
+      return {
+        ...state,
+        enemyPlayer: {
+          ...enemyPlayer,
+          accelerating: newAccelerating,
+          lastHazardEvent: newLastHazardEvent,
+        }
+      }
+    }
+    else { return state; }
   }
 
   return state;
 }
 
-function updateEnemyHazardEvent(state) {
-  const { enemyPlayer, enemyLevel, elapsedTime } = state;
-  const { position, accelerating } = enemyPlayer;
-  const { curve, hazards } = enemyLevel;
-  const positionVisualAdjust = position + HAZARD_DETECTION_OFFSET;
-  const isHazard = hazards[indexForX(curve, positionVisualAdjust)];
-
-  let hazardResult;
-
-  if (accelerating && !currentHazardResult(state)) {
-    if (isHazard) {
-      hazardResult = HAZARD_RESULTS.FAIL;
-    } else {
-      const previousIndex = indexForX(enemyLevel.curve, positionVisualAdjust) - 1;
-      if (previousIndex >= 0 && hazards[previousIndex]) {
-        const segment = segmentForIndex(curve, previousIndex);
-        const hazardDistance = positionVisualAdjust - segment.endpoint.x;
-        if (hazardDistance <= HAZARD_RESULTS.GOOD.window) hazardResult = HAZARD_RESULTS.GOOD;
-        if (hazardDistance <= HAZARD_RESULTS.GREAT.window) hazardResult = HAZARD_RESULTS.GREAT;
-        if (hazardDistance <= HAZARD_RESULTS.AMAZING.window) hazardResult = HAZARD_RESULTS.AMAZING;
-      }
-    }
-  }
-
-  if (hazardResult) {
-    return {
-      ...state,
-      enemyPlayer: {
-        ...enemyPlayer,
-        accelerating: hazardResult === HAZARD_RESULTS.FAIL ? false : accelerating,
-        lastHazardEvent: { time: elapsedTime, result: hazardResult },
-      }
-    }
-  }
-
-  return state;
-}
-
-function currentHazardResult(state) {
-  const { lastHazardEvent } = state.player;
+function currentHazardResult(state, character = CHARACTER.PLAYER) {
+  const { lastHazardEvent } = character === CHARACTER.PLAYER ? state.player : state.enemyPlayer;
   if (
     lastHazardEvent
     && (state.elapsedTime - lastHazardEvent.time) / 1000 < HAZARD_EVENT_TIME
@@ -205,22 +193,7 @@ function currentHazardResult(state) {
   }
 }
 
-function hazardVelocityModifier(state) {
-  const hazard = currentHazardResult(state);
-  return hazard ? hazard.velocity : 1;
-}
-
-function currentEnemyHazardResult(state) {
-  const { lastHazardEvent } = state.enemyPlayer;
-  if (
-    lastHazardEvent
-    && (state.elapsedTime - lastHazardEvent.time) / 1000 < HAZARD_EVENT_TIME
-  ) {
-    return lastHazardEvent.result;
-  }
-}
-
-function enemyHazardVelocityModifier(state) {
-  const hazard = currentEnemyHazardResult(state);
+function hazardVelocityModifier(state, character = CHARACTER.PLAYER) {
+  const hazard = currentHazardResult(state, character);
   return hazard ? hazard.velocity : 1;
 }

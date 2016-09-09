@@ -34,7 +34,7 @@ export default class Game extends Component {
         if (isPlayerAtEndOfTrack(this.state)) {
           onGameOver({
             time: this.state.elapsedTime,
-            won: isEnemyAtEndOfTrack(this.state.enemyPlayer.position, this.state.enemyLevel.curve)
+            won: isEnemyAtEndOfTrack(this.state)
               ? false
               : true
           })
