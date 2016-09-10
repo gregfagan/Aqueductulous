@@ -1,5 +1,3 @@
-import { HAZARD_RESULTS } from './core.js'
-
 // How close enemy needs to be to next endpoint
 // to start making decisions about entering the next
 // curve.
