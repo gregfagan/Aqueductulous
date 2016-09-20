@@ -1,5 +1,7 @@
 let enabledModules = {};
 
+// A set of constants used to specify a module for logging when
+// enabling/disabling, and retrieving a logger function.
 export const LOGGERMODULE = {
   LEVEL: "Level",
   ENEMY: "Enemy",
