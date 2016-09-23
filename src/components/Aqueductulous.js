@@ -5,7 +5,7 @@ import GameOver from './GameOver.js'
 
 import { GAMEMODE } from '../game/core.js';
 
-import { enableLogging } from '../util/log.js';
+import { initializeLogging } from '../util/log.js';
 
 export default class Aqueductulous extends Component {
   constructor() {
@@ -29,15 +29,7 @@ export default class Aqueductulous extends Component {
       }*/
     }
 
-    // Parse query string parameters to enable logging.
-    const queryStringArgs = window.location.search.replace('?', "").split('&');
-    for (let i = 0; i < queryStringArgs.length; i++) {
-      if (queryStringArgs[i].search(new RegExp("log=", "i")) !== -1) {
-        queryStringArgs[i].substr(4).split(",").forEach( (value, index, array) => {
-          enableLogging(value);
-        });
-      }
-    }
+    initializeLogging();
   }
 
   updateGameMode(gameMode, gameResult) {
