@@ -42,25 +42,29 @@ export function disableLogging(module) {
 export function logger(module) {
   const moduleUpperCase = module.toUpperCase();
 
-  return function(logMessage) {
-    if (enabledModules[moduleUpperCase]) {
-      let outputString = moduleUpperCase + " - ";
+  if (process.env.NODE_ENV !== 'production') {
+    return function(logMessage) {
+      if (enabledModules[moduleUpperCase]) {
+        let outputString = moduleUpperCase + " - ";
 
-      if ("title" in logMessage)
-        outputString += "*" + logMessage.title + "* ";
+        if ("title" in logMessage)
+          outputString += "*" + logMessage.title + "* ";
 
-      if ("message" in logMessage)
-        outputString += logMessage.message + " ";
+        if ("message" in logMessage)
+          outputString += logMessage.message + " ";
 
-      if ("valuesMap" in logMessage) {
-        outputString += logMessage.valuesMap.reduce(
-          (previousValue, currentValue, currentIndex, array) => {
-            return previousValue + currentValue[0] + ": " + currentValue[1] + (currentIndex !== array.length - 1 ? ", " : " ");
-          }, ""
-        );
+        if ("valuesMap" in logMessage) {
+          outputString += logMessage.valuesMap.reduce(
+            (previousValue, currentValue, currentIndex, array) => {
+              return previousValue + currentValue[0] + ": " + currentValue[1] + (currentIndex !== array.length - 1 ? ", " : " ");
+            }, ""
+          );
+        }
+
+        console.log(outputString);
       }
-
-      console.log(outputString);
     }
   }
+  else
+    return function() {};
 }
